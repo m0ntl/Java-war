@@ -2,13 +2,13 @@ package mvc;
 
 public interface WarModelEventsListener {
 
-	void addMissileLauncherInModel();
-	void addMissileDestructorInModel();
+	void addMissileLauncherInModel(String id, boolean isHidden);
+	void addMissileDestructorInModel(String id);
 	void addLauncherDestructorInModel();
-	void launchMissileInModel( int damage );
+	void launchMissileInModel(String launcherId);
 	void destructLuncherInModel();
 	void destructMissileInModel();
 	void destructLauncherDestructorInModel();
-	void sumUpInModel(int totalDamege, int launchedMissiles, int destructedMissiles, int destructedLaunchers, int hits );
+	void statisticsInModel(int totalDamege, int launchedMissiles, int destructedMissiles, int destructedLaunchers, int hits );
 	void exitInModel();	
 }

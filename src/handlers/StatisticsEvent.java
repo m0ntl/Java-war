@@ -3,17 +3,16 @@ package handlers;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 
-public class DestructMissileEvent implements EventHandler<ActionEvent> {
+public class StatisticsEvent implements EventHandler<ActionEvent> {
 
 //	private App app;
 //
-//	public DestructMissileEvent(App app) {
+//	public StatisticsEvent(App app) {
 //		this.app = app;
 //	}
 	
-	@Override
 	public void handle(ActionEvent arg0) {
-
+//		app.getMainPane().initiateSumUp();
 	}
 
 }

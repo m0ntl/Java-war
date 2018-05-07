@@ -1,32 +1,30 @@
-package UI;
+package ui;
 
 import mvc.WarUIEventsListener;
 
 public interface WarUI {
 	
-	void showAddMissileLauncher ();
-	void showAddMissileDestructor();
+	void showAddMissileLauncher (String id);
+	void showAddMissileDestructor(String id);
 	void showAddLauncherDestructor();
 	void showLaunchMissile(int damage);
 	void showDestructLuncher();
 	void showDestructMissile();
 	void showDestructLauncherDestructor();
-	void showSumUp(int totalDamege, int launchedMissiles, int destructedMissiles, int destructedLaunchers, int hits );//(String tribeName, int newNum);
+	void showStatistics(int totalDamage, int launchedMissiles, int destructedMissiles, int destructedLaunchers, int hits );//(String tribeName, int newNum);
 	void showExit();
 	
 	void initiateAddMissileLauncher(String id);
 	void initiateAddMissileDestructor(String id);
-	void initiateAddLauncherDestructor(String id, int type) ;
-	void initiateLaunchMissile(String idLauncher, String idMissile, int potentialDamage, String destination, int flyTime);
+	void initiateAddLauncherDestructor(String id, String type) ;
+	void initiateLaunchMissile(String idLauncher, int potentialDamage, String destination, int flyTime);
 	void initiateDestructLuncher(String id);
 	void initiateDestructMissile();
 	void initiateDestructLauncherDestructor();
-	void initiateSumUp();
+	void initiateStatistics();
 	void initiateExit();
 
 	void registerListener(WarUIEventsListener listener);
 	
-	//void showFailedAddingSurvivorToTribe(String fromTribeName);
-
-
+	//void showFailedAdding..
 }

@@ -1,52 +1,117 @@
 package bl;
 
-public class Missile {
 
-	private String 	id;
-	private String 	destination;
-	private int 	potentialDamage;
-	private int 	damage;
-	private int 	flyTime;
-	private int 	launchTime;
-	private boolean	isDestructed;
+public class Missile extends Thread implements BLConstants{
+
+	private static int 		iDGen;
+
+	private String 			id;
+	private String			destination;
 	
-	public Missile(String id, int potentialDamage, String destination, int flyTime, int launchTime){
+	private int 			flyTime;
+	private int 			damage, potentialDamage;
+	
+	private boolean			isDone, isDestructed;
+	
+	private MissileLauncher	launcher;
+
+	
+	public Missile(String id, int potentialDamage, String destination, int flyTime, MissileLauncher	launcher){
 		this.id = id;
 		this.potentialDamage = potentialDamage;
 		this.destination = destination;
 		this.flyTime = flyTime;
-		this.launchTime = launchTime;
-		this.isDestructed = false;
-		this.damage = 0;
-	}
-	
-	public String getId(){
-		return id;
-	}
-	
-	public void launch(){
-		//...
+		this.launcher = launcher;
 		
+		damage = 0;
+		isDestructed = false;
+		isDone = false;
+	}
+
+	public Missile(int potentialDamage, String destination, int flyTime, MissileLauncher	launcher){
+		this( ++iDGen+"", potentialDamage, destination, flyTime, launcher);
+		
+	}
+	
+	
+	/* --- missile launch --- */
+	public synchronized void run(){		
+		fly();
+		
+		// wait for launcher to get the launch results
 		try {
-			wait(flyTime);
-		} catch (InterruptedException e) { System.out.println( e.getStackTrace() ); }
+			wait();
+		} catch (InterruptedException e) {e.printStackTrace();}
+	}
+ 	
+	
+	public void fly(){		
+		try {
+			Thread.sleep( flyTime * ONE_SEC );
+		} catch (InterruptedException e) {e.printStackTrace();}
 		
-		if ( !isDestructed )
-			damage = potentialDamage;
+		if ( ! isDestructed ){
+			isDone = true;
+			damage = potentialDamage;	
+		}
+				
+		//notify launcher that flight finished
+		synchronized (launcher) {
+			launcher.notify();
+		}
+	}
+	
+	
+	public void destructMissile(){
+		if ( !isDone )
+			isDestructed = true;
+	}
+	
+	
+	/* --- getters --- */
+	public String getDestination() {
+		return destination;
+	}
+	
+	public String getTheId(){
+		return id;
 	}
 	
 	public int getDamage(){
 		return damage;
 	}
 	
-	public boolean isDestructed(){
+	public int getFlyTime(){
+		return flyTime;
+	}
+	
+	public boolean isDestructed() {
 		return isDestructed;
 	}
 	
-	public boolean isDestructed(int time){
-		if ( launchTime+flyTime <= time )
-			isDestructed = true;
-		return isDestructed;
+	
+	/* --- hashCode & equals --- */
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Missile other = (Missile) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
 	}
 
 }
