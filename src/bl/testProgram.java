@@ -17,7 +17,8 @@ public class testProgram {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		
+		jsonParser jp = new jsonParser();
+		System.out.println(jp.returnSubObject("test", new String[] {"missileDestructors", "destructor"}));
 	}
 
 }

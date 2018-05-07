@@ -12,8 +12,40 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+/*
+TODO:
+	1. Complete returnSubObject method to work with array
+	2. Add instead of the chained method calling in getMissileDestructors
+	3. Make generic (to work with all objects in the json)
+	4. Add file name as global variable
+*/
+
+
 public class jsonParser {
 	
+	public Object returnSubObject(String fileName, String[] objectPath){
+		JSONParser parser = new JSONParser();		
+		Object o = null;
+		try {
+			Object obj = parser.parse(new FileReader("conf_demo.json"));
+	        JSONObject jsonObject = (JSONObject) obj;
+	        o = (JSONObject) jsonObject.get("war");
+	        		;
+			for(String path : objectPath){
+				o = ((JSONObject) o).get(path);
+			}
+		} catch (FileNotFoundException e) {
+	        e.printStackTrace();
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    } catch (ParseException e) {
+	        e.printStackTrace();
+	    } catch (IllegalArgumentException e) {
+	        e.printStackTrace();
+	    }
+		
+		return o;
+	}
 	public List<MissileDestructor> getMissileDestructors(String fileName){
 		List<MissileDestructor> list = new ArrayList<MissileDestructor>();
 		
