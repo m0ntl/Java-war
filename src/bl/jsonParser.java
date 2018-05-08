@@ -26,7 +26,7 @@ public class jsonParser {
 		JSONParser parser = new JSONParser();		
 		Object o = null;
 		try {
-			Object obj = parser.parse(new FileReader("conf_demo.json"));
+			Object obj = parser.parse(new FileReader(fileName));
 	        JSONObject jsonObject = (JSONObject) obj;
 	        o = (JSONObject) jsonObject.get("war");
 	        		;
@@ -56,8 +56,7 @@ public class jsonParser {
 	        Object obj = parser.parse(new FileReader("conf_demo.json"));
 	        JSONObject jsonObject = (JSONObject) obj;
 	        
-	        //Really ugly way of chaining methods :)
-	        JSONArray missileDestructors = (JSONArray)((JSONObject)(((((JSONObject) jsonObject.get("war"))).get("missileDestructors")))).get("destructor");
+	        JSONArray missileDestructors = (JSONArray) returnSubObject("conf_demo.json", new String[] {"missileDestructors", "destructor"});
 	        
 	        //iterate over missile destructors
 	        Iterator<JSONObject> iterator = missileDestructors.iterator();
