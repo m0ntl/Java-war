@@ -1,7 +1,12 @@
 package bl;
 
 public interface BLConstants {
+	
+	
+	public static final int MAX_FLY_TIME = 20;
+	public static final int MIN_FLY_TIME = 1;
 
+//<<<<<<< HEAD
 	public static final int		ADD_LAUNCHER_DESTRUCTOR = 1;
 	public static final int 	ADD_MISSILE_DESTRUCTOR = 2;
 	public static final int 	ADD_LAUNCHER = 3;
@@ -13,6 +18,12 @@ public interface BLConstants {
 	public static final int 	ONE_SEC = 1000;
 	public static final int 	MAX_TIME = ONE_SEC * 30;	
 	public static final int 	YES = 1;
+ 
+	public enum LauncherDestructorType {
+	    PLANE,
+	    SHIP;
+	}
+//>>>>>>> 7c930b8db85cb8be07c07f5ad0de3748196534e0
 
 	public static final String	YES_NO = "YES --- 1\n"
 										+"NO ---- 2\n";

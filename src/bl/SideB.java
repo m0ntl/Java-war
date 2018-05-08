@@ -8,7 +8,6 @@ public class SideB {
 
 	private Vector<MissileLauncher>	allLaunchers = new Vector<>();
 	
-	
 	public void addLauncher(String id, boolean isHidden, Timer timer) {
 		MissileLauncher l;
 		if ( isHidden )

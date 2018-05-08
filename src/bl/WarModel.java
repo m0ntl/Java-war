@@ -10,14 +10,12 @@ public class WarModel implements IWar, BLConstants {
 	
 	private SideB 							B;
 	
-	//?
 	private Timer 							timer;
 	private int 							time;
 	private boolean 						inWar;
 
 	private int 							launchedMissiles;
 	private Vector<WarModelEventsListener>	allListeners = new Vector<WarModelEventsListener>();
-
 	
 	public WarModel() {
 		inWar = true;

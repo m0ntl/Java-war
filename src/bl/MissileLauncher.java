@@ -23,14 +23,13 @@ public class MissileLauncher implements Runnable, BLConstants{
 	private int 			destructedMissiles;
 	private int 			destructedLaunchers;
 		
-	private static Logger 	launcherLogger;
-
 	private Queue<Missile>	missilesToLaunch = new LinkedList<>();
 	
-	//?
+	//temp
 	private Timer 			timer;
 	private boolean			isAlive;
-	
+	private static Logger 	launcherLogger;
+
 	
 	public MissileLauncher(String id, Timer timer){
 		this.id = id;
