@@ -29,11 +29,14 @@ public class jsonParser {
 			Object obj = parser.parse(new FileReader(fileName));
 	        JSONObject jsonObject = (JSONObject) obj;
 	        o = (JSONObject) jsonObject.get("war");
-	        		;
+	        		
 			for(String path : objectPath){
+				if(o instanceof JSONObject)
 					o = ((JSONObject) o).get(path);
+				else if(o instanceof JSONArray)
+					//Cannot parse array, return array to caller for parsing
+					break;
 			}
-	
 		} catch (FileNotFoundException e) {
 	        e.printStackTrace();
 	    } catch (IOException e) {
