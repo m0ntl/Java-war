@@ -103,15 +103,10 @@ public class Program implements BLConstants{
 
 
 	/* --- configuration file related --- */
+	//TODO: Convert to use the jsonParser class
 	private static void readFromConfigFile(WarModel war){
-		try {
-			JSONParser parser = new JSONParser();
-			Object obj = parser.parse(new FileReader("configFile.json"));
-			JSONObject jsonObject =  (JSONObject) obj;
-			JSONObject theWar = (JSONObject) jsonObject.get("war");
-			
-			readLaunchers(theWar, war);
-		} catch (IOException | ParseException e) {e.printStackTrace();}
+		JSONObject theWar = (JSONObject) jsonParser.returnSubObject(new String[] {""});
+		readLaunchers(theWar, war);
 	}
 
 	private static void readLaunchers(JSONObject theWar, WarModel war){		

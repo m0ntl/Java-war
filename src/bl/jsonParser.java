@@ -22,21 +22,22 @@ TODO:
 
 public class jsonParser {
 	
-	public Object returnSubObject(String fileName, String[] objectPath){
+	public static Object returnSubObject(String[] objectPath){
 		JSONParser parser = new JSONParser();		
 		Object o = null;
 		try {
-			Object obj = parser.parse(new FileReader(fileName));
+			Object obj = parser.parse(new FileReader(BLConstants.CONFIGURATION_FILE));
 	        JSONObject jsonObject = (JSONObject) obj;
 	        o = (JSONObject) jsonObject.get("war");
-	        		
-			for(String path : objectPath){
-				if(o instanceof JSONObject)
-					o = ((JSONObject) o).get(path);
-				else if(o instanceof JSONArray)
-					//Cannot parse array, return array to caller for parsing
-					break;
-			}
+	        if(objectPath[0] != "")
+				for(String path : objectPath){
+					System.out.println("I'm here");
+					if(o instanceof JSONObject)
+						o = ((JSONObject) o).get(path);
+					else if(o instanceof JSONArray)
+						//Cannot parse array, return array to caller for parsing
+						break;
+				}
 		} catch (FileNotFoundException e) {
 	        e.printStackTrace();
 	    } catch (IOException e) {
@@ -59,7 +60,7 @@ public class jsonParser {
 	        Object obj = parser.parse(new FileReader("conf_demo.json"));
 	        JSONObject jsonObject = (JSONObject) obj;
 	        
-	        JSONArray missileDestructors = (JSONArray) returnSubObject("conf_demo.json", new String[] {"missileDestructors", "destructor"});
+	        JSONArray missileDestructors = (JSONArray) returnSubObject(new String[] {"missileDestructors", "destructor"});
 	        
 	        //iterate over missile destructors
 	        Iterator<JSONObject> iterator = missileDestructors.iterator();

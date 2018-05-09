@@ -43,4 +43,5 @@ public interface BLConstants {
 	public static final String	ENTER_FLIGHT_TIME = "Enter flight time:\n";
 	public static final String	ENTER_LAUNCHER_ID = "Enter launcher's id:\n";
 	public static final String	ENTER_IS_LAUNCHER_HIDDEN = "is launcher hidden?\n" + YES_NO;
+	public static final String CONFIGURATION_FILE = "configFile.json";
 }
