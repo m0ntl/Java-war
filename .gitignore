@@ -1,5 +1,7 @@
 /bin/
 
+!/bin/external-dependencies/
+
 # Eclipse settings
 .settings
 

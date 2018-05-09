@@ -8,12 +8,12 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Users/montl/Desktop/json-simple-1.1.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/montl/Desktop/quartz/quartz-2.2.3/lib/quartz-2.2.3.jar"/>
-	<classpathentry kind="lib" path="C:/Users/montl/Desktop/quartz/quartz-2.2.3/lib/slf4j-log4j12-1.7.7.jar"/>
-	<classpathentry kind="lib" path="C:/Users/montl/Desktop/quartz/quartz-2.2.3/lib/slf4j-api-1.7.7.jar"/>
-	<classpathentry kind="lib" path="C:/Users/montl/Desktop/quartz/quartz-2.2.3/lib/c3p0-0.9.1.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/montl/Desktop/quartz/quartz-2.2.3/lib/log4j-1.2.16.jar"/>
-	<classpathentry kind="lib" path="C:/Users/montl/Desktop/quartz/quartz-2.2.3/lib/quartz-jobs-2.2.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/montl/workspace/Java-war/bin/external-dependencies/c3p0-0.9.1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/montl/workspace/Java-war/bin/external-dependencies/json-simple-1.1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/montl/workspace/Java-war/bin/external-dependencies/log4j-1.2.16.jar"/>
+	<classpathentry kind="lib" path="C:/Users/montl/workspace/Java-war/bin/external-dependencies/quartz-2.2.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/montl/workspace/Java-war/bin/external-dependencies/quartz-jobs-2.2.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/montl/workspace/Java-war/bin/external-dependencies/slf4j-api-1.7.7.jar"/>
+	<classpathentry kind="lib" path="C:/Users/montl/workspace/Java-war/bin/external-dependencies/slf4j-log4j12-1.7.7.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
