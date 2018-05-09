@@ -31,7 +31,7 @@ public class jsonParser {
 	        o = (JSONObject) jsonObject.get("war");
 	        		;
 			for(String path : objectPath){
-				o = ((JSONObject) o).get(path);
+					o = ((JSONObject) o).get(path);
 			}
 	
 		} catch (FileNotFoundException e) {
