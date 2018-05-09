@@ -8,3 +8,4 @@
 
 # JDT-specific (Eclipse Java Development Tools)     
 .classpath
+copy.classpath
