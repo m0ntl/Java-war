@@ -3,10 +3,18 @@ package bl;
 public interface BLConstants {
 	
 	
-	public static final int MAX_FLY_TIME = 20;
-	public static final int MIN_FLY_TIME = 1;
+	public static final int 	MAX_FLY_TIME = 20;
+	public static final int 	MIN_FLY_TIME = 1;
+	
+	public static final int 	ONE_SEC = 1000;
+	public static final int 	MAX_TIME = ONE_SEC * 30;	
 
-//<<<<<<< HEAD
+	public enum LauncherDestructorType {
+	    PLANE,
+	    SHIP;
+	}
+	
+	//console menu related
 	public static final int		ADD_LAUNCHER_DESTRUCTOR = 1;
 	public static final int 	ADD_MISSILE_DESTRUCTOR = 2;
 	public static final int 	ADD_LAUNCHER = 3;
@@ -15,16 +23,7 @@ public interface BLConstants {
 	public static final int 	DESTRUCT_LAUNCHER = 6;
 	public static final int 	SHOW_STATISTICS = 7;
 	public static final int 	EXIT = 0;
-	public static final int 	ONE_SEC = 1000;
-	public static final int 	MAX_TIME = ONE_SEC * 30;	
 	public static final int 	YES = 1;
- 
-	public enum LauncherDestructorType {
-	    PLANE,
-	    SHIP;
-	}
-//>>>>>>> 7c930b8db85cb8be07c07f5ad0de3748196534e0
-
 	public static final String	YES_NO = "YES --- 1\n"
 										+"NO ---- 2\n";
 	public static final String LOAD_FROM_CONFIG = "Do you want to read from config file?\n" + YES_NO;
@@ -42,6 +41,9 @@ public interface BLConstants {
 	public static final String	ENTER_DESTINATION = "Enter destination:\n";
 	public static final String	ENTER_FLIGHT_TIME = "Enter flight time:\n";
 	public static final String	ENTER_LAUNCHER_ID = "Enter launcher's id:\n";
+	public static final String	ENTER_MISSILE_ID = "Enter missile's id:\n";
 	public static final String	ENTER_IS_LAUNCHER_HIDDEN = "is launcher hidden?\n" + YES_NO;
-	public static final String CONFIGURATION_FILE = "configFile.json";
+	
+	public static final String 	CONFIGURATION_FILE = "configFile.json";
+
 }

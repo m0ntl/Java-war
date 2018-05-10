@@ -13,7 +13,7 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
-import ui.UIConstants;
+import UI.UIConstants;
 
 public class LaunchMissileEvent implements EventHandler<ActionEvent>, UIConstants {
 

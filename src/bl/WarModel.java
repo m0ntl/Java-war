@@ -4,75 +4,74 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
 
+import Logging.WarLogsGenerator;
 import mvc.WarModelEventsListener;
 
 public class WarModel implements IWar, BLConstants {
 	
 	private SideB 							B;
-	
-	private Timer 							timer;
-	private int 							time;
-	private boolean 						inWar;
 
-	private int 							launchedMissiles;
+	private WarLogsGenerator				logsGen = new WarLogsGenerator();
+
 	private Vector<WarModelEventsListener>	allListeners = new Vector<WarModelEventsListener>();
 	
 	public WarModel() {
-		inWar = true;
-		timer = new Timer();
-		B = new SideB(); 
-		
-		launchedMissiles = 0;
+		B = new SideB(this); 
 	}
 
 	public void registerListener(WarModelEventsListener listener) {
 		allListeners.add(listener);
 	}
 	
-	
-	/* --- missile-launcher related --- */
+	/* missile-launcher */
 	public void addMissileLauncher(String id, boolean isHidden) {
-		B.addLauncher(id, isHidden, timer);
-		System.out.println("missile launcher #" + id + ", hidden: " + isHidden+ ", was added !");
+		MissileLauncher l;
+		if ( isHidden )
+			l = new HiddenMissileLauncher(id, B);
+		else
+			l = new MissileLauncher(id, B);
 		
+		B.addLauncher(l);
+		logsGen.addLauncher(l);
 		fireAddMissileLuncherEvent(id, isHidden);	
 	}
-	
+
 	public void addMissileToLaunch(String launcherId, String id, int damage, String destination, int flyTime, int launchTime) {
-		timer.schedule( new TimerTask() {
+		new Timer().schedule( new TimerTask() {
 			@Override
 			public void run() {
-				WarModel.this.launchMissile(launcherId, damage, destination, flyTime);
+				WarModel.this.addLaunch(launcherId, id, damage, destination, flyTime);
 			} 
 		}, launchTime * ONE_SEC );
 	}
 	
-	public void launchMissile(String launcherId, int potentialDamage, String destination, int flyTime) {
-		B.launchMissile(launcherId, potentialDamage, destination, flyTime);
-		fireLaunchMissileEvent(launcherId);
-		launchedMissiles++;
+	public void addLaunch(String launcherID,String missileID, int potentialDamage, String destination, int flyTime) {
+		B.addMissileToLaunchQueue(launcherID, missileID, potentialDamage, destination, flyTime);
 	}
 	
+	public synchronized void onStartOfLaunch(String launcherID, String missileID, String destination){
+		logsGen.startLaunch(destination, launcherID);
+		fireLaunchMissileEvent(launcherID, missileID, destination);
+	}
+	
+	public synchronized void onEndOfLaunch(MissileLauncher l, boolean success, String destination, int damage, int flightTime){
+		logsGen.endLaunch(destination, damage, flightTime, success, l);
+		// fire..
+	}
 	
 	/* --- general --- */
 	public void statistics(){
-		int destructedLaunchers = B.getDestructedLaunchers();
-		int destructedMissiles = B.getDestructedMissiles();
-		int launchedMissiles = B.getLaunchedMissiles();
-		int hits = B.getHits();
-		int totalDamage = B.getTotalDamage();
+		// need to add : destructedLaunchers, destructedMissiles 1
 		
-		System.out.println("total damage: " + totalDamage
-				+ "\nlaunched missiles: " + launchedMissiles
-				+ "\n destructed missiles: " +destructedMissiles
-				+ "\n destructed launchers: " +destructedLaunchers 
-				+ "\nmissile hits: " + hits);
+		String s = "total damage: " + B.getTotalDamage()
+				+ "\nlaunched missiles: " + B.getLaunchedMissiles()
+				+ "\nmissile hits: " + B.getHits();
 
-		fireStatisticsEvent(totalDamage, launchedMissiles, destructedMissiles, destructedLaunchers, hits);
+		logsGen.statistics(s);
+		fireStatisticsEvent(s);
 	}
 	
 	public void endWar(){
-		inWar = false;
 		B.endWar();
 	}
 	
@@ -89,15 +88,15 @@ public class WarModel implements IWar, BLConstants {
 			l.addMissileLauncherInModel(id, isHidden);
 	}
 	
-	private void fireLaunchMissileEvent(String launcherId) {
+	public void fireLaunchMissileEvent(String launcherId, String missileID, String destination) {
 		for (WarModelEventsListener l : allListeners) {
-			l.launchMissileInModel(launcherId);
+			l.launchMissileInModel(launcherId); 
 		}
 	}
 
-	private void fireStatisticsEvent(int totalDamage, int launchedMissiles, int destructedMissiles, int destructedLaunchers, int missileHits){
+	private void fireStatisticsEvent(String s){
 		for (WarModelEventsListener l : allListeners) 
-			l.statisticsInModel(totalDamage, launchedMissiles, destructedMissiles, destructedLaunchers, missileHits );
+			l.statisticsInModel(s);
 	}
 	
 	private void fireExitEvent() {
@@ -109,12 +108,8 @@ public class WarModel implements IWar, BLConstants {
 	public int getLaunchersNum(){
 		return getLaunchersNum();
 	}
-	
-	public int getLaunchedMissiles(){
-		return launchedMissiles;
-	}
-	
 }
+
 	
 	
 	
@@ -122,16 +117,9 @@ public class WarModel implements IWar, BLConstants {
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
 	
 	
 	
@@ -205,5 +193,3 @@ public class WarModel implements IWar, BLConstants {
 	// private void fireNotificationFailedAdding..(String message) {
 	// for (GameModelEventsListener g : allListeners) {
 	// g.notifyFailedAdding...InModel(message);
-	
-

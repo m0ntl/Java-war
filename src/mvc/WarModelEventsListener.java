@@ -9,6 +9,6 @@ public interface WarModelEventsListener {
 	void destructLuncherInModel();
 	void destructMissileInModel();
 	void destructLauncherDestructorInModel();
-	void statisticsInModel(int totalDamege, int launchedMissiles, int destructedMissiles, int destructedLaunchers, int hits );
+	void statisticsInModel( String s );
 	void exitInModel();	
 }

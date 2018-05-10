@@ -10,8 +10,8 @@ public class HiddenMissileLauncher extends MissileLauncher implements IHidden{
 	private boolean		isLaunching; 
 
 	
-	public HiddenMissileLauncher(String id, Timer timer) {
-		super(id, timer);
+	public HiddenMissileLauncher(String id, SideB side) {
+		super(id, side);
 		isHiddenNow = true;
 		isLaunching = false;
 	}
@@ -46,5 +46,9 @@ public class HiddenMissileLauncher extends MissileLauncher implements IHidden{
 	public void destructLauncher(){
 		if ( !isHiddenNow )
 			super.destructLauncher();
+	}
+	
+	public boolean isHidden(){
+		return true;
 	}
 }

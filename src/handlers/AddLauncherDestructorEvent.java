@@ -6,7 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.TextInputDialog;
-import ui.UIConstants;
+import UI.UIConstants;
 
 public class AddLauncherDestructorEvent implements EventHandler<ActionEvent>, UIConstants {
 

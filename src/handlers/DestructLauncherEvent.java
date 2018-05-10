@@ -5,7 +5,7 @@ import java.util.Optional;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.TextInputDialog;
-import ui.UIConstants;
+import UI.UIConstants;
 
 public class DestructLauncherEvent implements EventHandler<ActionEvent>, UIConstants{
 

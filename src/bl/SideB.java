@@ -1,82 +1,87 @@
 package bl;
 
 import java.util.Optional;
-import java.util.Timer;
 import java.util.Vector;
 
 public class SideB {
 
-	private Vector<MissileLauncher>	allLaunchers = new Vector<>();
+	WarModel 						theWar;
 	
-	public void addLauncher(String id, boolean isHidden, Timer timer) {
-		MissileLauncher l;
-		if ( isHidden )
-			l = new HiddenMissileLauncher(id, timer);
-		else
-			l = new MissileLauncher(id, timer);
+	private int 					hits;
+	private int 					totalDamage;
+	private int 					launchedMissiles;
 		
+	private Vector<Missile>			allMissiles = new Vector<>();
+	private Vector<MissileLauncher>	allLaunchers = new Vector<>();
+
+	
+	public SideB(WarModel theWar){
+		this.theWar = theWar;
+		launchedMissiles = 0;
+	}
+
+	/* missile-launch */
+	public void addLauncher(MissileLauncher l) {
 		allLaunchers.add(l);
 		Thread launcherThread = new Thread(l);
 		launcherThread.start();	
 	}
 	
-	public void launchMissile(String idLauncher, int potentialDamage, String destination, int flyTime) {
-		MissileLauncher launcher = getLauncherById(idLauncher);
+	public void addMissileToLaunchQueue(String launcherID, String missileID, int potentialDamage,String destination, int flyTime) {
+		
+		MissileLauncher launcher = getLauncherById(launcherID);
 		if ( launcher == null )
 			return;
 		
-		launcher.addMissileToQueue(potentialDamage, destination, flyTime);
+		Missile m = new Missile(missileID, potentialDamage, destination, flyTime, launcher);
+		launcher.addMissileToLaunchQueue(m);
+		allMissiles.add(m);
+		launchedMissiles++;
 	}
-
+	
+	public synchronized void onStartOfLaunch( String launcherID, String missileID, String  destination){
+		theWar.onStartOfLaunch(launcherID, missileID, destination);
+	}
+	
+	public synchronized void onEndOfLaunch(MissileLauncher l, boolean success, String destination, int damage, int flightTime){
+		if ( success ){
+			hits++;
+			totalDamage += damage;
+		}
+		theWar.onEndOfLaunch(l, success, destination, damage, flightTime);	
+	}
+	
 	public void endWar(){
 		for( MissileLauncher l : allLaunchers )
 			l.terminate();
 	}
 	
 	
-	/* --- getters --- */
+	/* getters */
 	private MissileLauncher getLauncherById(String id){
 		Optional<MissileLauncher> matchingObject = allLaunchers.stream().
-				filter(l -> l.getTheId().equals(id)).findFirst();
+				filter(l -> l.getID().equals(id)).findFirst();
 		return matchingObject.orElse(null);		
 	}
 	
-	public int getDestructedMissiles(){
-		int destructedMissiles = 0;
-		for( MissileLauncher l : allLaunchers )
-			destructedMissiles += l.getDestructedMissiles();
-		return destructedMissiles;
-	}
-	
-	public int getDestructedLaunchers(){
-		int destructedLaunchers = 0;
-		for( MissileLauncher l : allLaunchers )
-			destructedLaunchers += l.getDestructedLaunchers();
-		return destructedLaunchers;
+	public Missile getMissileById(String id){
+		Optional<Missile> matchingObject = allMissiles.stream().
+				filter(m -> m.getID().equals(id)).findFirst();
+		return matchingObject.orElse(null);		
 	}
 	
 	public int getLaunchedMissiles(){
-		int launchedMissiles = 0;
-		for( MissileLauncher l : allLaunchers )
-			launchedMissiles += l.getLaunchedMissiles();
 		return launchedMissiles;
 	}
 	
-	public int	getTotalDamage(){
-		int totalDamage = 0;
-		for( MissileLauncher l : allLaunchers )
-			totalDamage += l.getTotalDamage();
+	public int getTotalDamage(){
 		return totalDamage;
 	}
 	
 	public int getHits(){
-		int hits = 0;
-		for( MissileLauncher l : allLaunchers )
-			hits += l.getHits();
 		return hits;
 	}
-	
-	public int getLaunchersNum(){
-		return allLaunchers.size();
-	}
 }
+
+
+

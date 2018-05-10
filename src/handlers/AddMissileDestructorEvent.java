@@ -6,7 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.TextInputDialog;
 import javafx.stage.StageStyle;
-import ui.UIConstants;
+import UI.UIConstants;
 
 public class AddMissileDestructorEvent implements EventHandler<ActionEvent> , UIConstants{
 

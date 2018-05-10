@@ -3,20 +3,20 @@ package bl;
 
 public class Missile extends Thread implements BLConstants{
 
-	private static int 		iDGen;
-
 	private String 			id;
 	private String			destination;
 	
 	private int 			flyTime;
-	private int 			damage, potentialDamage;
+	private int 			damage;
+	private int 			potentialDamage;
 	
-	private boolean			isDone, isDestructed;
+	private boolean			isDone;
+	private boolean			isDestructed;
 	
 	private MissileLauncher	launcher;
-
 	
-	public Missile(String id, int potentialDamage, String destination, int flyTime, MissileLauncher	launcher){
+	
+	public Missile(String id, int potentialDamage, String destination,int flyTime, MissileLauncher launcher){
 		this.id = id;
 		this.potentialDamage = potentialDamage;
 		this.destination = destination;
@@ -28,13 +28,8 @@ public class Missile extends Thread implements BLConstants{
 		isDone = false;
 	}
 
-	public Missile(int potentialDamage, String destination, int flyTime, MissileLauncher	launcher){
-		this( ++iDGen+"", potentialDamage, destination, flyTime, launcher);
-		
-	}
 	
-	
-	/* --- missile launch --- */
+	/* missile launch */
 	public synchronized void run(){		
 		fly();
 		
@@ -44,7 +39,6 @@ public class Missile extends Thread implements BLConstants{
 		} catch (InterruptedException e) {e.printStackTrace();}
 	}
  	
-	
 	public void fly(){		
 		try {
 			Thread.sleep( flyTime * ONE_SEC );
@@ -61,19 +55,18 @@ public class Missile extends Thread implements BLConstants{
 		}
 	}
 	
-	
 	public void destructMissile(){
 		if ( !isDone )
 			isDestructed = true;
 	}
 	
 	
-	/* --- getters --- */
+	/* getters */
 	public String getDestination() {
 		return destination;
 	}
 	
-	public String getTheId(){
+	public String getID(){
 		return id;
 	}
 	
@@ -90,7 +83,7 @@ public class Missile extends Thread implements BLConstants{
 	}
 	
 	
-	/* --- hashCode & equals --- */
+	/* hashCode & equals */
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;

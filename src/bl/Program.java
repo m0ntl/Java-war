@@ -19,23 +19,21 @@ public class Program implements BLConstants{
 
 	public static void main(String[] args) {
 
+		
 		WarModel war = new WarModel();
-		new WarController(war);
 				
 		System.out.println(LOAD_FROM_CONFIG);
 		
-		if ( s.nextInt() == YES ){
+		if ( s.nextInt() == YES )
 			readFromConfigFile(war);
-			try {
-				Thread.sleep( MAX_TIME );
-			} catch (InterruptedException e) {e.printStackTrace();}
-		}
-		
+
 		//temp, need to show options only after configuration finished
+		new WarController(war);
+		
 		chooseOptions(war);
 	}
 
-	/* --- menu --- */
+	/* menu */
 	public static void chooseOptions( WarModel war ) {
 		boolean exit = false;
 		int ans;
@@ -80,9 +78,9 @@ public class Program implements BLConstants{
 		System.out.println(ENTER_LAUNCHER_ID);
 		String id = s.next();
 		System.out.println(ENTER_IS_LAUNCHER_HIDDEN);
-		String hidden = s.next();
+		int hidden = s.nextInt();
 		boolean isHidden = false;
-		if ( hidden.equals(YES) )
+		if ( hidden == YES )
 			isHidden = true;
 		
 		war.addMissileLauncher(id, isHidden);
@@ -90,7 +88,9 @@ public class Program implements BLConstants{
 	
 	private static void launchMissileMenu(WarModel war){
 		System.out.println(ENTER_LAUNCHER_ID);
-		String idLauncher = s.next();
+		String launcherID = s.next();
+		System.out.println(ENTER_MISSILE_ID);
+		String missileID= s.next();
 		System.out.println(ENTER_POTENTIAL_DAMAGE);
 		int potentialDamage = s.nextInt();
 		System.out.println(ENTER_DESTINATION);
@@ -98,15 +98,20 @@ public class Program implements BLConstants{
 		System.out.println(ENTER_FLIGHT_TIME);
 		int flyTime = s.nextInt();
 		
-		war.launchMissile(idLauncher, potentialDamage, destination, flyTime);
+		war.addLaunch(launcherID, missileID, potentialDamage, destination, flyTime);
 	}
 
 
-	/* --- configuration file related --- */
-	//TODO: Convert to use the jsonParser class
+	/* configuration file related */
 	private static void readFromConfigFile(WarModel war){
-		JSONObject theWar = (JSONObject) jsonParser.returnSubObject(new String[] {""});
-		readLaunchers(theWar, war);
+		try {
+			JSONParser parser = new JSONParser();
+			Object obj = parser.parse(new FileReader("configFile.json"));
+			JSONObject jsonObject =  (JSONObject) obj;
+			JSONObject theWar = (JSONObject) jsonObject.get("war");
+			
+			readLaunchers(theWar, war);
+		} catch (IOException | ParseException e) {e.printStackTrace();}
 	}
 
 	private static void readLaunchers(JSONObject theWar, WarModel war){		

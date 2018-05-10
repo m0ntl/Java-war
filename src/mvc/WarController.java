@@ -1,7 +1,8 @@
 package mvc;
 
 import bl.WarModel;
-import ui.WarUI;
+import UI.App;
+import UI.WarUI;
 
 public class WarController implements WarModelEventsListener, WarUIEventsListener{
 
@@ -9,11 +10,14 @@ public class WarController implements WarModelEventsListener, WarUIEventsListene
 	private WarUI 		warUI;
 	
 	public WarController( WarModel war ) {
+		
 		this.war = war;
 		war.registerListener(this);
 		
-//		warUI = new WarUI();		
+//		this.warUI = warUI;		
 //		warUI.registerListener(this);
+		
+	//	App.launch(App.class);
 	}
 	
 	
@@ -84,7 +88,7 @@ public class WarController implements WarModelEventsListener, WarUIEventsListene
 		//warUI.showDestructLauncherDestructor();
 	}
 
-	public void statisticsInModel(int totalDamage, int launchedMissiles, int destructedMissiles, int destructedLaunchers, int hits ) {
+	public void statisticsInModel( String s ) {
 		//warUI.showStatistics(totalDamage, launchedMissiles, destructedMissiles, destructedLaunchers, hits );
 	}
 

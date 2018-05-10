@@ -1,68 +1,41 @@
 package bl;
 
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Random;
-import java.util.Timer;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class MissileLauncher implements Runnable, BLConstants{
 
 	private String 			id;		
 	
-	private boolean			inWar;
-	private boolean			waitingForMissile;
+	private SideB 			side;
 
-	//statistics
-	private int 			hits;
-	private int 			totalDamage;
-	private int 			launchedMissiles;
-	private int 			destructedMissiles;
-	private int 			destructedLaunchers;
+	private boolean			inWar;
+	private boolean			isAlive;
+	private boolean			waitingForMissile;
 		
 	private Queue<Missile>	missilesToLaunch = new LinkedList<>();
+			
 	
-	//temp
-	private Timer 			timer;
-	private boolean			isAlive;
-	private static Logger 	launcherLogger;
-
-	
-	public MissileLauncher(String id, Timer timer){
+	public MissileLauncher(String id, SideB side){
 		this.id = id;
-		this.timer = timer;
+		this.side = side;
 		
 		waitingForMissile = false;
 		inWar = true;
 		isAlive = true;
-		initLoggers();
-	}
-
-	private void initLoggers(){
-		//temp
-		try {
-			launcherLogger = Logger.getLogger("launcher Logger");
-			FileHandler launcherHandler = new FileHandler("launcher_" + id + ".txt");
-			launcherLogger.addHandler(launcherHandler);
-
-		} catch (SecurityException | IOException e) {e.printStackTrace();}
 	}
 		
-	public synchronized void addMissileToQueue(int potentialDamage, String destination, int flyTime){
-		Missile m = new Missile(potentialDamage, destination, flyTime, this);
-		missilesToLaunch.add(m);
- 		
-		synchronized (MissileLauncher.this) {
+	public synchronized void addMissileToLaunchQueue(Missile m){
+		missilesToLaunch.add( m );
+
+		synchronized (this) {
 			if ( waitingForMissile )
 				notify();
 		}
 	}
 
 	
-	/* --- launch missile --- */
+	/* missile-launch */
 	public void run() {
 		while ( inWar ) {
 			if ( !missilesToLaunch.isEmpty() )
@@ -77,23 +50,19 @@ public class MissileLauncher implements Runnable, BLConstants{
 				}
 			}
 		}
-		System.out.println("launcher #" +id+ " has finished..");
 	}
 	
 	private synchronized void prepareToLaunch(){
-		Missile m = missilesToLaunch.peek();
+		Missile m = missilesToLaunch.poll();
 		if (m == null) 
 			return;
 		
+		side.onStartOfLaunch(id, m.getID(), m.getDestination());
 		launchMissile(m);
 		updateResults(m);				
-		missilesToLaunch.poll();
-		System.out.println("launcher #"+id+" finished with missile #"+m.getTheId()+" !!!!!!!");
-
 	}
 
-	public void launchMissile(Missile m) {
-		System.out.println("launcher #"+id+" starts the launch of missile #"+m.getTheId());
+	public void launchMissile(Missile m) {		
 		m.start();
 		try {
 			//wait until missile finishes flying
@@ -101,37 +70,23 @@ public class MissileLauncher implements Runnable, BLConstants{
 		} catch (InterruptedException e) { e.printStackTrace(); }
  	}
 
-	
-	/* --- results of a launch --- */
 	public void updateResults(Missile m){
-		launchedMissiles++;
-
-		String logMsg = "missile #" + m.getTheId() + " finished! \ndestination was " + m.getDestination();
-
-		if ( m.isDestructed() )
-			logMsg += addMiss();
-		else
-			logMsg += addHit(m.getDamage());
+	
+		boolean success = !m.isDestructed();
+		String destination = m.getDestination();
+		int damage = m.getDamage();
+		int flightTime = m.getFlyTime();
 		
+		//notify missile that launcher finished getting the information
 		synchronized (m) {
 			m.notify();
 		}
-		//launcherLogger.log(Level.INFO, logMsg);
-	}
-	
-	private String addHit(int damage){
-		hits++;
-		totalDamage +=damage;
-		return "\nmissile hit the target..! \ndamage is " + damage;
-	}
-	
-	private String addMiss(){
-		destructedMissiles++;
-		return "\nmissile got destructed..\n";
+		
+		side.onEndOfLaunch(this, success, destination, damage, flightTime);
 	}
 
 	
-	/* --- stop thread --- */
+	/* stop thread */
 	public void destructLauncher(){
 		isAlive = false;
 		terminate();
@@ -146,33 +101,21 @@ public class MissileLauncher implements Runnable, BLConstants{
 	}
 
 	
-	/* --- getters --- */
-	public String getTheId(){
+	/* getters */
+	public String getID(){
 		return id;
 	}
-	
-	public int getDestructedMissiles() {
-		return destructedMissiles;
+
+	public boolean isAlive(){
+		return isAlive;
 	}
 	
-	public int getDestructedLaunchers() {
-		return destructedLaunchers;
+	public boolean isHidden(){
+		return false;
 	}
 
-	public int getLaunchedMissiles() {
-		return launchedMissiles;
-	}
-
-	public int getTotalDamage() {
-		return totalDamage;
-	}
-
-	public int getHits() {
-		return hits;
-	}
 	
-	
-	/* --- hashCode & equals --- */
+	/* hashCode & equals */
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -195,5 +138,4 @@ public class MissileLauncher implements Runnable, BLConstants{
 			return false;
 		return true;
 	}
-
 }
