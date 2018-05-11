@@ -1,7 +1,5 @@
 /bin/
 
-!/bin/external-dependencies/
-
 # Eclipse settings
 .settings
 
@@ -10,4 +8,8 @@
 
 # JDT-specific (Eclipse Java Development Tools)     
 .classpath
+*classpath*
 copy.classpath
+
+.*
+!.gitignore
