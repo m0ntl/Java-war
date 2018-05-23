@@ -5,6 +5,7 @@
 
 # Eclipse Core      
 .project
+/lib/
 
 # JDT-specific (Eclipse Java Development Tools)     
 .classpath
