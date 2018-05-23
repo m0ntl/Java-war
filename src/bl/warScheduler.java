@@ -1,12 +1,11 @@
 package bl;
 
-
-
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -22,36 +21,56 @@ public class warScheduler {
 	
 	static ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(5);
 	final static List<MissileDestructor> launchList = new ArrayList<MissileDestructor>();
+
+	//Map for holding MissileDestructor items to schedule
+	final static Map<String, Integer> missiles = new LinkedHashMap<>();
+	final static Map<String, Integer> destructors = new LinkedHashMap<>();
 	
 	public warScheduler(){
+	}
+	
+	public static void scheduleMissileLaunch(Map<String, Integer> list) {
+		//Sort the list by launch time
+		list = sortByValue(list);
 		
+		//Copy list to static map for scheduling
+		Iterator it = list.entrySet().iterator();
+	    while (it.hasNext()) {
+	        Map.Entry pair = (Map.Entry)it.next();
+	        missiles.put((String)pair.getKey(), (Integer)pair.getValue());
+	        it.remove(); // avoids a ConcurrentModificationException
+	    }
+	    
+	    for (Map.Entry<String, Integer> entry : missiles.entrySet()) {
+			System.out.println("Key : " + entry.getKey() + " Value : " + entry.getValue());
+			scheduleLaunch((Integer)entry.getValue());
+		}
+	    
 	}
 	
-	public void scheduleMDLaunch(List<MissileDestructor> list) {
-		for(MissileDestructor md : list) {
-			//scheduleLaunch(Integer.parseInt( md.getID()), md);
-			launchList.add(md);
-			//scheduleLaunch();
-		}
-		for(MissileDestructor md : launchList) {
-			//scheduleLaunch(Integer.parseInt( md.getID()), md);
-			//launchList.add(md);
-			scheduleLaunch(Integer.parseInt(md.getID()));
-		}
-	}
-	
-	private static void scheduleLaunch(int ttl) {
-		ScheduledFuture scheduledFuture = scheduledExecutorService.schedule(new Callable() {
+	private static void scheduleLaunch(int time) {
+		ScheduledFuture<Object> scheduledFuture = scheduledExecutorService.schedule(new Callable<Object>() {
 	        public Object call() throws Exception {
-	            System.out.println("Executed!");
-	            System.out.println(launchList.get(0));
-	            launchList.remove(0);
+	        	//Print first element for debugging
+	        	System.out.print("Time to launch: ");
+	            System.out.println(missiles.entrySet().iterator().next());
+	            //remove first element
+	            missiles.remove(missiles.entrySet().iterator().next().getKey());
 	            return "Complete";
 	        }
 	    },
-		ttl+1,
+		time,
 		TimeUnit.SECONDS);
-		//System.out.println(list.size());
-		//list.remove(0);
-	}	
+	}
+	
+	public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
+        List<Entry<K, V>> list = new ArrayList<>(map.entrySet());
+        list.sort(Entry.comparingByValue());
+
+        Map<K, V> result = new LinkedHashMap<>();
+        for (Entry<K, V> entry : list) {
+            result.put(entry.getKey(), entry.getValue());
+        }
+        return result;
+    }
 }
