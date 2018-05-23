@@ -47,15 +47,12 @@ public class WarModel implements IWar, BLConstants {
 	}
 
 	//war-actions
+=======
+>>>>>>> 6e61ab330dbf2fcd63ba1ca6cbe65f15b793feaf
 	public void addMissileToLaunch(String launcherId, String id, int damage, String destination, int flyTime, int launchTime) {
-		new Timer().schedule( new TimerTask() {
-			@Override
-			public void run() {
-				WarModel.this.addLaunch(launcherId, id, damage, destination, flyTime);
-			} 
-		}, launchTime * ONE_SEC );
 	}
 	
+	//Change function to only take the launcher id
 	public void addLaunch(String launcherID,String missileID, int potentialDamage, String destination, int flyTime) {
 		B.addMissileToLaunchQueue(launcherID, missileID, potentialDamage, destination, flyTime);
 	}
