@@ -45,12 +45,6 @@ public class WarModel implements IWar, BLConstants {
 		//logsGen.addLauncherDestructor(MissileDestructor d)
 		fireAddLauncherDestructorEvent();
 	}
-
-	//war-actions
-=======
->>>>>>> 6e61ab330dbf2fcd63ba1ca6cbe65f15b793feaf
-	public void addMissileToLaunch(String launcherId, String id, int damage, String destination, int flyTime, int launchTime) {
-	}
 	
 	//Change function to only take the launcher id
 	public void addLaunch(String launcherID,String missileID, int potentialDamage, String destination, int flyTime) {

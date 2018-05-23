@@ -18,34 +18,6 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class warScheduler {
-<<<<<<< HEAD
-	public static void scheduleJob() {
-//		// Say Hello to the World and display the date/time
-//	    SchedulerFactory sf = new StdSchedulerFactory();
-//	    Scheduler sched = sf.getScheduler();
-//	    
-//	    Date runTime = evenMinuteDate(new Date());
-//	    
-//	    JobDetail job = newJob(HelloJob.class).withIdentity("job1", "group1").build();
-//
-//	    // Trigger the job to run on the next round minute
-//	    Trigger trigger = newTrigger().withIdentity("trigger1", "group1").startAt(runTime).build();
-//
-//	    // Tell quartz to schedule the job using our trigger
-//	    sched.scheduleJob(job, trigger);
-//	    
-//	    sched.start();
-//	    
-//	    try {
-//	        // wait 65 seconds to show job
-//	        Thread.sleep(65L * 1000L);
-//	        // executing...
-//	    } catch (Exception e) {
-//	        //
-//	    }
-//	    
-//	    sched.shutdown(true);
-=======
 	
 	static ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(5);
 	final static List<MissileDestructor> launchList = new ArrayList<MissileDestructor>();
@@ -73,11 +45,6 @@ public class warScheduler {
 			System.out.println("Key : " + entry.getKey() + " Value : " + entry.getValue());
 			scheduleLaunch((Integer)entry.getValue());
 		}
-<<<<<<< HEAD
->>>>>>> f58822c391353ddd54bea414818fd5fe3937f9b0
-=======
-	    
->>>>>>> 6e61ab330dbf2fcd63ba1ca6cbe65f15b793feaf
 	}
 	
 	private static void scheduleLaunch(int time) {

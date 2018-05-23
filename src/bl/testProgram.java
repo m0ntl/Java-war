@@ -49,7 +49,7 @@ public class testProgram {
 		list.add(md6);
 		
 		warScheduler ws = new warScheduler();
-		ws.scheduleMDLaunch(list);
+		//ws.scheduleMDLaunch(list);
 //		scheduleLaunch(3, new MissileDestructor("1"));
 	}
 	
