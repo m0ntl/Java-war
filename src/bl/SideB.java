@@ -27,6 +27,15 @@ public class SideB {
 		launcherThread.start();	
 	}
 	
+	public void addMissile(Missile m) {
+		allMissiles.add(m);
+	}
+	
+	public void launchMissileByID(String id) {
+		Missile m = getMissileById(id);
+		addMissileToLaunchQueue(m.getLauncher().getID(), m.getID(), m.getDamage(), m.getDestination(), m.getFlyTime());
+	}
+	
 	public void addMissileToLaunchQueue(String launcherID, String missileID, int potentialDamage,String destination, int flyTime) {
 		
 		MissileLauncher launcher = getLauncherById(launcherID);

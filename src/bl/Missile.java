@@ -16,6 +16,16 @@ public class Missile extends Thread implements BLConstants{
 	private MissileLauncher	launcher;
 	
 	
+	public MissileLauncher getLauncher() {
+		return launcher;
+	}
+
+
+	public void setLauncher(MissileLauncher launcher) {
+		this.launcher = launcher;
+	}
+
+
 	public Missile(String id, int potentialDamage, String destination,int flyTime, MissileLauncher launcher){
 		this.id = id;
 		this.potentialDamage = potentialDamage;

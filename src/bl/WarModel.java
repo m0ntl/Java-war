@@ -6,12 +6,28 @@ import java.util.Vector;
 
 import Logging.WarLogsGenerator;
 import mvc.WarModelEventsListener;
+import program.warScheduler;
 
 public class WarModel implements IWar, BLConstants {
 	
 	private SideB 							B;
 	private WarLogsGenerator				logsGen = new WarLogsGenerator();
 	private Vector<WarModelEventsListener>	allListeners = new Vector<WarModelEventsListener>();
+	
+	//warScheduler.scheduleMissileLaunch(null);
+	warScheduler ws = new warScheduler();
+	
+	public void setMissileScheduler() {
+		warScheduler.scheduleMissileLaunch(null);
+	}
+	
+	private void addMissile(String id, int potentialDamage, String destination, int flyTime, MissileLauncher ml){
+		Missile m = new Missile(id, potentialDamage, destination, flyTime, ml);
+	}
+	
+	public void setDestructorScheduler() {
+		warScheduler.scheduleMissileLaunch(null);
+	}
 	
 	public WarModel() {
 		B = new SideB(this); 
@@ -21,7 +37,10 @@ public class WarModel implements IWar, BLConstants {
 		allListeners.add(listener);
 	}
 	
-	//add
+	public void addMissileLaunch(String missileID) {
+		B.launchMissileByID(missileID);
+	}
+	
 	public void addMissileLauncher(String id, boolean isHidden) {
 		MissileLauncher l;
 		if ( isHidden )
@@ -62,7 +81,7 @@ public class WarModel implements IWar, BLConstants {
 	}
 	
 	public void onStartOfMissileDestruct(){
-		logsGen.startMissileDestruct();
+		//logsGen.startMissileDestruct();
 		fireDestructMissileEvent();
 	}
 
