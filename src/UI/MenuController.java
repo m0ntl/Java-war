@@ -49,7 +49,7 @@ public class MenuController implements Initializable, UIConstants{
   
  @FXML
   private void handleAddMissileDestructorAction(final ActionEvent event){
-		dialog.setTitle(ADD_MISSILE_DESTRUCTOR);
+		dialog.setTitle(STR_ADD_MISSILE_DESTRUCTOR);
 		dialog.setHeaderText("Enter Missile-Destructor's id");
 		dialog.setContentText(ID);
 
