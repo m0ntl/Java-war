@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox id="vbox" prefHeight="400" prefWidth="800"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="UI.MenuController">	
+
+<BorderPane id="mainPane" fx:id="mainPane" prefHeight="400.0" prefWidth="600.0" 
+	xmlns:fx="http://javafx.com/fxml/1">
+
+   <top>
+      <VBox prefHeight="57.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+
+         <children>
+            <ToolBar prefHeight="34.0" prefWidth="600.0">
+              <items>
+                <Button mnemonicParsing="false" text="Exit" onAction="#handleExitAction"/>
+                <Button mnemonicParsing="false" text="Show Statistics" onAction="#handleStatisticsAction" />
+              </items>
+            </ToolBar>
+            <TilePane prefHeight="53.0" prefWidth="600.0" />
+         </children>
+      </VBox>
+   </top>
+
+ <bottom>
+
+      <SplitPane dividerPositions="0.5" prefHeight="36.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+        <items>
+
+          <AnchorPane prefHeight="160.0" prefWidth="100.0">
+               <children>
+        <MenuButton mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="Add" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="5.0">
+                     <items>
+                        <MenuItem mnemonicParsing="false" text="Missile-Launcher" onAction="#handleAddLauncherAction"/>
+                     </items>
+                  </MenuButton>
+                  <MenuButton layoutX="94.0" layoutY="5.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="Launch" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="90.0" AnchorPane.topAnchor="5.0">
+                     <items>
+                        <MenuItem mnemonicParsing="false" text="Missile" onAction="#handleLaunchMissileAction" />
+                     </items>
+                  </MenuButton>
+               </children>
+            </AnchorPane>
+
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+               <children>
+                  <MenuButton mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="Add" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="5.0">
+                     <items>
+                        <MenuItem mnemonicParsing="false" text="Missile-Destructor" onAction="#handleAddMissileDestructorAction" />
+                        <MenuItem mnemonicParsing="false" text="Launcher-Destructor" onAction="#handleAddLauncherDestructorAction" />
+                     </items>
+                  </MenuButton>
+                  <MenuButton layoutX="54.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="Destruct" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="90.0" AnchorPane.topAnchor="5.0">
+                     <items>
+                        <MenuItem mnemonicParsing="false" text="Missile" onAction="#handleDestructMissileAction" />
+                        <MenuItem mnemonicParsing="false" text="Launcher" onAction="#handleDestructLauncherAction"/>
+                     </items>
+                  </MenuButton>
+               </children>
+            </AnchorPane>
+
+        </items>
+      </SplitPane>
+   </bottom>
+
+
+</BorderPane>
+</VBox>

@@ -1,7 +1,9 @@
 package mvc;
 
+import bl.Program;
 import bl.WarModel;
 import UI.App;
+import UI.War;
 import UI.WarUI;
 
 public class WarController implements WarModelEventsListener, WarUIEventsListener{
@@ -9,21 +11,18 @@ public class WarController implements WarModelEventsListener, WarUIEventsListene
 	private WarModel 	war;
 	private WarUI 		warUI;
 	
-	public WarController( WarModel war ) {
+	public WarController( WarUI warUI ) {
 		
-		this.war = war;
+		this.warUI = warUI;
+		warUI.registerListener(this);
+		
+		this.war = Program.war;
 		war.registerListener(this);
-		
-//		this.warUI = warUI;		
-//		warUI.registerListener(this);
-		
-	//	App.launch(App.class);
 	}
 	
-	
 	/* --- UI --- */
-	public void addMissileLauncherFromUI(String id) {
-		///war.addMissileLauncher(id);
+	public void addMissileLauncherFromUI(String id, boolean isHidden) {
+		war.addMissileLauncher(id, isHidden);
 	}
 
 	public void addMissileDestructorFromUI(String id) {
@@ -97,3 +96,4 @@ public class WarController implements WarModelEventsListener, WarUIEventsListene
 	}
 
 }
+

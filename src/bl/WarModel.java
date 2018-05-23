@@ -10,9 +10,7 @@ import mvc.WarModelEventsListener;
 public class WarModel implements IWar, BLConstants {
 	
 	private SideB 							B;
-
 	private WarLogsGenerator				logsGen = new WarLogsGenerator();
-
 	private Vector<WarModelEventsListener>	allListeners = new Vector<WarModelEventsListener>();
 	
 	public WarModel() {
@@ -23,7 +21,7 @@ public class WarModel implements IWar, BLConstants {
 		allListeners.add(listener);
 	}
 	
-	/* missile-launcher */
+	//add
 	public void addMissileLauncher(String id, boolean isHidden) {
 		MissileLauncher l;
 		if ( isHidden )
@@ -36,6 +34,19 @@ public class WarModel implements IWar, BLConstants {
 		fireAddMissileLuncherEvent(id, isHidden);	
 	}
 
+	public void addMissileDestructor(){
+		//A.addDestructor
+		//logsGen.addMissileDestructor(MissileDestructor d)
+		//fireAddMissileDestructorEvent(id);
+	}
+	
+	public void addLauncherDestructor(){
+		//A.addDestructor..
+		//logsGen.addLauncherDestructor(MissileDestructor d)
+		fireAddLauncherDestructorEvent();
+	}
+
+	//war-actions
 	public void addMissileToLaunch(String launcherId, String id, int damage, String destination, int flyTime, int launchTime) {
 		new Timer().schedule( new TimerTask() {
 			@Override
@@ -59,6 +70,23 @@ public class WarModel implements IWar, BLConstants {
 		// fire..
 	}
 	
+	public void onStartOfMissileDestruct(){
+		logsGen.startMissileDestruct();
+		fireDestructMissileEvent();
+	}
+
+	public void onEndOfMissileDestruct(){
+		
+	}
+	
+	public void onStartOfLauncherDestruct(){
+		
+	}
+
+	public void onEndOfLauncherDestruct(){
+		
+	}
+
 	/* --- general --- */
 	public void statistics(){
 		// need to add : destructedLaunchers, destructedMissiles 1
@@ -82,7 +110,7 @@ public class WarModel implements IWar, BLConstants {
 	}
 
 	
-	/* --- fire to controller --- */
+	// fire to controller 
 	private void fireAddMissileLuncherEvent(String id, boolean isHidden) {
 		for (WarModelEventsListener l : allListeners) 
 			l.addMissileLauncherInModel(id, isHidden);
@@ -91,6 +119,24 @@ public class WarModel implements IWar, BLConstants {
 	public void fireLaunchMissileEvent(String launcherId, String missileID, String destination) {
 		for (WarModelEventsListener l : allListeners) {
 			l.launchMissileInModel(launcherId); 
+		}
+	}
+	
+	private void fireAddMissileDestructorEvent(String id) {
+		for (WarModelEventsListener l : allListeners) {
+			l.addMissileDestructorInModel(id);
+		}
+	}
+	
+	private void fireAddLauncherDestructorEvent() {
+	for (WarModelEventsListener l : allListeners) {
+		l.addLauncherDestructorInModel();
+	}
+}
+	
+	private void fireDestructMissileEvent() {
+		for (WarModelEventsListener l : allListeners) {
+			l.destructMissileInModel();
 		}
 	}
 
@@ -104,92 +150,13 @@ public class WarModel implements IWar, BLConstants {
 			l.exitInModel();
 	}
 	
-	/* --- getters --- */
+	// getters
 	public int getLaunchersNum(){
 		return getLaunchersNum();
 	}
 }
 
-	
-	
-	
-	
-	
-	
-	
-
-
-
-	
-	
-	
-	
-	
-	
-
-	
-	
-//	//add missile destructor
-//	public void addMissileDestructor(String id) {
-//		A.addMissileDestructor(id);
-//		fireAddMissileDestructorEvent(id);
-//	}
-//
-//	private void fireAddMissileDestructorEvent(String id) {
-//		for (WarModelEventsListener l : allListeners) {
-//			l.addMissileDestructorInModel(id);
-//		}
-//	}
-//	//add launcher destructor
-//	public void addLauncherDestructor(String id, String type) {
-//		A.addLauncherDestructor(id, type);
-//		fireAddLauncherDestructorEvent();
-//	}
-//	
-//	private void fireAddMissileDestructorEvent() {
-//		for (WarModelEventsListener l : allListeners) {
-//			l.addMissleDestructorInModel();
-//		}
-//	}
-//	
-//	public void addLauncherDestructor(String type) {
-//		A.addLauncherDestructor(type);
-//		fireAddLauncherDestructorEvent();
-//	}
-//	
-//	private void fireAddLauncherDestructorEvent() {
-//		for (WarModelEventsListener l : allListeners) {
-//			l.addLauncherDestructorInModel();
-//		}
-//	}
-//	
-//	//destruct
-//	public void destructLauncher(String id) {
-//		//israel.destructLauncher();
-//		fireDestructLuncherEvent();
-//	}
-//
-//	private void fireDestructLuncherEvent() {
-//		for (WarModelEventsListener l : allListeners) {
-//			l.destructLuncherInModel();
-//		}
-//	}
-//
-//	public void destructMissile() {
-//		A.destructMissile();
-//		fireDestructMissileEvent();
-//	}
-//
-//	private void fireDestructMissileEvent() {
-//		for (WarModelEventsListener l : allListeners) {
-//			l.destructMissileInModel();
-//		}
-////	}
-//	
-//
-//	}
-
-	
+		
 	// private void fireNotificationFailedAdding..(String message) {
 	// for (GameModelEventsListener g : allListeners) {
 	// g.notifyFailedAdding...InModel(message);

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox  
+ xmlns:fx="http://javafx.com/fxml/1"  >	
+   <children>
+      <GridPane alignment="CENTER" >
+         <columnConstraints>
+            <ColumnConstraints prefWidth="120.0" />
+            <ColumnConstraints prefWidth="120.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints prefHeight="40.0"/>
+            <RowConstraints prefHeight="40.0"/>
+            <RowConstraints prefHeight="40.0"/>
+            <RowConstraints prefHeight="40.0"/>
+            <RowConstraints prefHeight="40.0"/>
+         </rowConstraints>
+         <children>
+            <Label text="Enter missile id:" GridPane.rowIndex="1" />
+            <Label text="Enter destination:" GridPane.rowIndex="2" />
+            <Label text="Enter flight time:" GridPane.rowIndex="3" />
+            <TextField fx:id="txt_missile_id" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="txt_destination" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <TextField fx:id="txt_flight_time" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <TextField fx:id="txt_launcher_id" GridPane.columnIndex="1" />
+            <Label alignment="CENTER" text="Enter Launcher id:" />
+            <Button id="ok" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="OK" textAlignment="CENTER" GridPane.rowIndex="4" />
+            <Button id="cancel" cancelButton="true" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Cancel" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+         </children>
+      </GridPane>
+   </children>
+</VBox>

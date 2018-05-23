@@ -1,12 +1,13 @@
 package UI;
 
+import java.util.Vector;
+
 import mvc.WarUIEventsListener;
 
 public class War implements WarUI{
 
-	
-	
-	
+	private Vector<WarUIEventsListener> allListeners  = new Vector<WarUIEventsListener>();
+
 	
 	@Override
 	public void showAddMissileLauncher(String id) {
@@ -62,9 +63,9 @@ public class War implements WarUI{
 	}
 
 	@Override
-	public void initiateAddMissileLauncher(String id) {
-		// TODO Auto-generated method stub
-		
+	public void initiateAddMissileLauncher(String id, boolean isHidden) {
+		fireAddMissileLauncherEvent(id, isHidden);
+
 	}
 
 	@Override
@@ -117,8 +118,14 @@ public class War implements WarUI{
 
 	@Override
 	public void registerListener(WarUIEventsListener listener) {
-		// TODO Auto-generated method stub
-		
+		allListeners.add(listener);
+	}
+	
+	//fire
+	
+	private void fireAddMissileLauncherEvent(String id, boolean isHidden) {
+		for (WarUIEventsListener l : allListeners)
+			l.addMissileLauncherFromUI(id, isHidden);
 	}
 
 }

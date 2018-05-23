@@ -2,7 +2,7 @@ package UI;
 
 import mvc.WarUIEventsListener;
 
-public interface WarUI {
+public interface WarUI extends UIConstants{
 	
 	void showAddMissileLauncher (String id);
 	void showAddMissileDestructor(String id);
@@ -14,7 +14,7 @@ public interface WarUI {
 	void showStatistics(int totalDamage, int launchedMissiles, int destructedMissiles, int destructedLaunchers, int hits );//(String tribeName, int newNum);
 	void showExit();
 	
-	void initiateAddMissileLauncher(String id);
+	void initiateAddMissileLauncher(String id, boolean isHidden);
 	void initiateAddMissileDestructor(String id);
 	void initiateAddLauncherDestructor(String id, String type) ;
 	void initiateLaunchMissile(String idLauncher, int potentialDamage, String destination, int flyTime);

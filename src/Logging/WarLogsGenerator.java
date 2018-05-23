@@ -39,6 +39,10 @@ public class WarLogsGenerator{
 		logger.log(Level.INFO, msg, l);
 	}
 	
+	public void startMissileDestruct(){
+		//logger.info("launcher #" + launcherID + " just launched a missile to " + destination);
+	}
+	
 	public void afterMissileDestruct(MissileDestructor d, String launcherID , boolean success){
 		String msg = "Destructor tried to destruct launcher #" + launcherID;
 		if ( success )
@@ -68,7 +72,7 @@ public class WarLogsGenerator{
 	}
 	
 	public void addMissileDestructor(MissileDestructor d){
-		addHandler(d, "launcher" , d.getID());	
+		addHandler(d, d.getClass().getSimpleName() , d.getID());	
 
 	}
 	
