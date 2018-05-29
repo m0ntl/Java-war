@@ -10,7 +10,9 @@ import program.warScheduler;
 
 public class WarModel implements IWar, BLConstants {
 	
+	private SideA 							A;
 	private SideB 							B;
+	
 	private WarLogsGenerator				logsGen = new WarLogsGenerator();
 	private Vector<WarModelEventsListener>	allListeners = new Vector<WarModelEventsListener>();
 	
@@ -20,7 +22,9 @@ public class WarModel implements IWar, BLConstants {
 	public void setMissileScheduler() {
 		warScheduler.scheduleMissileLaunch(null);
 	}
-	
+	public MissileLauncher getMissileLauncherByID(String id) {
+		return B.getLauncherById(id);
+	}
 	private void addMissile(String id, int potentialDamage, String destination, int flyTime, MissileLauncher ml){
 		Missile m = new Missile(id, potentialDamage, destination, flyTime, ml);
 	}
@@ -164,9 +168,24 @@ public class WarModel implements IWar, BLConstants {
 	public int getLaunchersNum(){
 		return getLaunchersNum();
 	}
+	
+	public boolean destructLauncher(String launcherID) {
+		MissileLauncher targetML = B.getLauncherById(launcherID);
+		if ( !targetML.isHidden()){
+			B.destructLauncher(targetML);
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean destructMissile(String missileID) {
+		Missile targetMissile = B.getMissileById(missileID);
+		if ((!targetMissile.isDestructed()) && targetMissile.isAlive()) {
+			//If target missile thread is alive & isn't destructed.
+			//No need to check if missile is done, performed by the missile.
+			B.destructMissile(targetMissile);
+			return true;
+		}
+		return false;
+	}
 }
-
-		
-	// private void fireNotificationFailedAdding..(String message) {
-	// for (GameModelEventsListener g : allListeners) {
-	// g.notifyFailedAdding...InModel(message);

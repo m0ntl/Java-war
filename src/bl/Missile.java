@@ -117,4 +117,9 @@ public class Missile extends Thread implements BLConstants{
 		return true;
 	}
 
+
+	public boolean isDone() {
+		return isDone;
+	}
+
 }
