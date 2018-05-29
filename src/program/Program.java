@@ -12,19 +12,19 @@ import org.json.simple.parser.ParseException;
 
 import UI.App;
 import bl.BLConstants;
+import bl.Missile;
+import bl.MissileLauncher;
 import bl.WarModel;
 import mvc.WarController;
 
-public class Program implements BLConstants{
+public class Program implements bl.BLConstants{
 
 	static Scanner s = new Scanner (System.in);
 	public static WarModel war = new WarModel();
 	
 	public static void main(String[] args) {
-		
-		readFromConfigFile(war);	
-						
-		chooseOptions(war);
+		readFromConfigFile(war);					
+		//chooseOptions(war);
 	}
 
 	/* menu */
@@ -73,9 +73,7 @@ public class Program implements BLConstants{
 		String id = s.next();
 		System.out.println(ENTER_IS_LAUNCHER_HIDDEN);
 		int hidden = s.nextInt();
-		boolean isHidden = false;
-		if ( hidden == YES )
-			isHidden = true;
+		boolean isHidden = (hidden == YES);
 		
 		war.addMissileLauncher(id, isHidden);
 	}
@@ -99,53 +97,141 @@ public class Program implements BLConstants{
 	/* configuration file related */
 	private static void readFromConfigFile(WarModel war){
 		
-		System.out.println(LOAD_FROM_CONFIG);
-		if ( s.nextInt() != YES )
-			return;
+		// ########################## RETURN THIS STATEMENT - COMMENTED FROM TESTING ########################## 
+//		System.out.println(LOAD_FROM_CONFIG);
+//		if ( s.nextInt() != YES )
+//			return;
 		
-		jsonParser parser = new jsonParser();
-		try {
-			
-			//Object obj = parser.parse(new FileReader(CONFIGURATION_FILE));
-			//JSONObject jsonObject =  (JSONObject) obj;
-			//JSONObject theWar = (JSONObject) jsonObject.get("war");
-			
-			//readLaunchers(theWar, war);
-		} catch (IOException | ParseException e) {e.printStackTrace();}
+		readLaunchers(); //Done - remember to add to schedule
+		readMissileDestructors(); //Done - remember to add to schedule
+		readMissileLauncherDestructors(); //Done - remember to add to schedule
 	}
-
-	private static void readLaunchers(JSONObject theWar, WarModel war){		
-		JSONObject missileLaunchers = (JSONObject) theWar.get("missileLaunchers");
-		JSONArray launchers = (JSONArray) missileLaunchers.get("launcher");
-		Iterator<JSONObject> iterator = launchers.iterator();
+	
+	private static void readMissileLauncherDestructors() {
+		JSONArray missileLauncherDestructors = (JSONArray)jsonParser.returnSubObject(new String[] {"missileLauncherDestructors", "destructor"});
+		Iterator<JSONObject> iterator = missileLauncherDestructors.iterator();
+		
+		while (iterator.hasNext()) {
+			JSONObject mlDestructor = iterator.next();
+			String type = (String) mlDestructor.get("type");
+			
+			scheduleDestructLanucher((JSONObject) mlDestructor);
+		}
+	}
+	
+	private static void scheduleDestructLanucher(JSONObject destructorJsonObject){
+		if(destructorJsonObject.get("destructedLanucher") instanceof JSONArray){
+			JSONArray destructedLaunchers = (JSONArray) destructorJsonObject.get("destructedLanucher");
+			Iterator<JSONObject> itr = destructedLaunchers.iterator();
+			
+			while (itr.hasNext()){
+				JSONObject target = itr.next();
+				scheduleDestructedLauncher(target);
+			}
+		} else {
+			JSONObject target = (JSONObject) destructorJsonObject.get("destructedLanucher");
+			scheduleDestructedLauncher(target);
+		}
+	}
+	
+	private static void scheduleDestructedLauncher(JSONObject destructorJsonObject){
+		/*
+		 * TODO:
+		 * Instead of printing, schedule the missile launch!
+		 */
+//		System.out.println(destructorJsonObject);
+//		System.out.println(destructorJsonObject.get("id"));
+//		System.out.println(destructorJsonObject.get("destructTime"));
+	}
+	
+	private static void readMissileDestructors() {
+		JSONArray missileDestructors = (JSONArray)jsonParser.returnSubObject(new String[] {"missileDestructors", "destructor"});
+		Iterator<JSONObject> iterator = missileDestructors.iterator();
+		
+		while (iterator.hasNext()) {
+			JSONObject destructor = iterator.next();
+			String id = (String)destructor.get("id");
+			
+			scheduleDestructMissile((JSONObject) destructor, id);
+		}
+	}
+	
+	private static void scheduleDestructMissile(JSONObject destructorJsonObject, String destructorID){
+		if(destructorJsonObject.get("destructdMissile") instanceof JSONArray){
+			JSONArray missiles = (JSONArray) destructorJsonObject.get("destructdMissile");
+			Iterator<JSONObject> itr = missiles.iterator();
+			
+			while (itr.hasNext()){
+				JSONObject missile = itr.next();
+				scheduleMissile(missile);
+			}
+		} else
+			scheduleMissile((JSONObject)destructorJsonObject.get("destructdMissile"));
+	}
+	
+	private static void scheduleMissile(JSONObject missile) {
+		/*
+		 * TODO:
+		 * Instead of printing, schedule the missile launch!
+		 */
+		//System.out.println(missile.get("id"));
+		//System.out.println(missile.get("destructAfterLaunch"));
+	}
+	
+	//private static void readLaunchers(JSONObject theWar, WarModel war){		
+	private static void readLaunchers(){
+		JSONArray missileLaunchers = (JSONArray) jsonParser.returnSubObject(new String[] {"missileLaunchers", "launcher"});
+		Iterator<JSONObject> iterator = missileLaunchers.iterator();
 		
 		while (iterator.hasNext()) {
 			JSONObject launcher = iterator.next();
 			String id = (String) launcher.get("id");
-			String hidden = (String) launcher.get("isHidden");
-			boolean isHidden = false;
-			if ( hidden.equals("true") )
-				isHidden = true;
+			boolean isHidden = ((String) launcher.get("isHidden")) == "true";
+			System.out.println(id);
+			System.out.println(isHidden);
+			
 			war.addMissileLauncher(id, isHidden);
 			
-			readMissilesToLaunch(launcher, id, war);
+			readMissilesToLaunch((JSONObject)launcher, id, war);
 		}
-}
-
+	}
+	private static Missile getMissileDetails(JSONObject missile, MissileLauncher ml) {
+		return new Missile(
+				(String) missile.get("id"), 
+				Integer.parseInt( (String) missile.get("damage") ), 
+				(String) missile.get("destination"), 
+				Integer.parseInt( (String) missile.get("flyTime") ), 
+				ml);
+	}
 	private static void readMissilesToLaunch(JSONObject launcher, String launcherId, WarModel war){	
-		JSONArray missiles = (JSONArray) launcher.get("missile");
-		Iterator<JSONObject> itr = missiles.iterator();
+		if(launcher.get("missile") instanceof JSONArray){
+			JSONArray missiles = (JSONArray) launcher.get("missile");
+			Iterator<JSONObject> itr = missiles.iterator();
 	
-		while (itr.hasNext()){
-			JSONObject missile = itr.next();
-			String id = (String) missile.get("id");
-			String destination = (String) missile.get("destination");
-			int launchTime = Integer.parseInt( (String) missile.get("launchTime") );
-			int flyTime = Integer.parseInt( (String) missile.get("flyTime") );
-			int damage = Integer.parseInt( (String) missile.get("damage") );
-		
+			while (itr.hasNext()){
+				JSONObject missile = itr.next();
+				Missile m = getMissileDetails(missile, war.getMissileLauncherByID(launcherId));
+				System.out.println("Mine");
+				System.out.println(m);
+				
+				// ################ Add missile launch to schedule ################
+				//war.addMissileToLaunch(launcherId, id, damage, destination, flyTime, launchTime);
+			}
+		} else {
+			JSONObject missile = (JSONObject) launcher.get("missile");
+			Missile m = getMissileDetails(missile, war.getMissileLauncherByID(launcherId));
+			
+			// ################ Add missile launch to schedule ################
 			//war.addMissileToLaunch(launcherId, id, damage, destination, flyTime, launchTime);
 		}
+	}
+	
+	public void destructLauncher(String launcherID) {
+		war.destructLauncher(launcherID);
+	}
+	
+	public void destructMissile(String missileID){
+		war.destructMissile(missileID);
 	}
 }
 

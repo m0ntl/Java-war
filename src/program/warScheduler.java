@@ -24,9 +24,10 @@ public class warScheduler {
 	static ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(5);
 	final static List<MissileDestructor> launchList = new ArrayList<MissileDestructor>();
 
-	//Map for holding MissileDestructor items to schedule
+	//Static maps to hold objects for scheduling 
 	final static Map<String, Integer> missiles = new LinkedHashMap<>();
-	final static Map<String, Integer> destructors = new LinkedHashMap<>();
+	final static Map<String, Integer> missileDestructors = new LinkedHashMap<>();
+	final static Map<String, Integer> launcherDestructors = new LinkedHashMap<>();
 
 	
 	public static void scheduleMissileLaunch(Map<String, Integer> list) {
@@ -43,17 +44,18 @@ public class warScheduler {
 	    
 	    for (Map.Entry<String, Integer> entry : missiles.entrySet()) {
 			System.out.println("Key : " + entry.getKey() + " Value : " + entry.getValue());
-			scheduleLaunch((Integer)entry.getValue());
+			scheduleMissileLaunch((Integer)entry.getValue());
 		}
 	}
 	
-	private static void scheduleLaunch(int time) {
+	private static void scheduleMissileLaunch(int time) {
 		ScheduledFuture<Object> scheduledFuture = scheduledExecutorService.schedule(new Callable<Object>() {
 	        public Object call() throws Exception {
 	        	//Print first element for debugging
 	        	System.out.print("Time to launch: ");
 	            System.out.println(missiles.entrySet().iterator().next());
 	            //remove first element
+	            
 	            missiles.remove(missiles.entrySet().iterator().next().getKey());
 	            return "Complete";
 	        }
