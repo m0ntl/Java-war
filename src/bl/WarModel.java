@@ -17,10 +17,9 @@ public class WarModel implements IWar, BLConstants {
 	private Vector<WarModelEventsListener>	allListeners = new Vector<WarModelEventsListener>();
 	
 	//warScheduler.scheduleMissileLaunch(null);
-	warScheduler ws = new warScheduler();
 	
 	public void setMissileScheduler() {
-		warScheduler.scheduleMissileLaunch(null);
+		warScheduler.MissileLaunch(null);
 	}
 	public MissileLauncher getMissileLauncherByID(String id) {
 		return B.getLauncherById(id);
@@ -30,7 +29,7 @@ public class WarModel implements IWar, BLConstants {
 	}
 	
 	public void setDestructorScheduler() {
-		warScheduler.scheduleMissileLaunch(null);
+		warScheduler.MissileLaunch(null);
 	}
 	
 	public WarModel() {
