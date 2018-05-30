@@ -163,7 +163,6 @@ public class WarModel implements IWar, BLConstants {
 			l.exitInModel();
 	}
 	
-	// getters
 	public int getLaunchersNum(){
 		return getLaunchersNum();
 	}
@@ -180,11 +179,15 @@ public class WarModel implements IWar, BLConstants {
 	public boolean destructMissile(String missileID) {
 		Missile targetMissile = B.getMissileById(missileID);
 		if ((!targetMissile.isDestructed()) && targetMissile.isAlive()) {
-			//If target missile thread is alive & isn't destructed.
+			//If target missile thread is alive && isn't destructed.
 			//No need to check if missile is done, performed by the missile.
 			B.destructMissile(targetMissile);
 			return true;
 		}
 		return false;
+	}
+	
+	public void launchMissile(String missileID) {
+		B.launchMissileByID(missileID);
 	}
 }

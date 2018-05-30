@@ -1,5 +1,6 @@
 package program;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -93,15 +94,63 @@ public class Program implements bl.BLConstants{
 	/* configuration file related */
 	private static void readFromConfigFile(WarModel war){
 		
-		// ########################## RETURN THIS STATEMENT - COMMENTED FROM TESTING ########################## 
+		// ########################## COMMENTED FROM TESTING ########################## 
 //		System.out.println(LOAD_FROM_CONFIG);
 //		if ( s.nextInt() != YES )
 //			return;
 		
-		//readLaunchers(); //Done - remember to add to schedule
-		readMissileDestructors(); //Done - remember to add to schedule
-		//readMissileLauncherDestructors(); //Done - remember to add to schedule
+		readLaunchers(); //Done - remember to add to schedule
+		//readMissileDestructors(); //Done
+		//readMissileLauncherDestructors(); //Done
 	}
+	
+	private static void readLaunchers(){
+		JSONArray missileLaunchers = (JSONArray) jsonParser.returnSubObject(new String[] {"missileLaunchers", "launcher"});
+		Iterator<JSONObject> iterator = missileLaunchers.iterator();
+		
+		while (iterator.hasNext()) {
+			JSONObject launcher = iterator.next();
+			String id = (String) launcher.get("id");
+			boolean isHidden = ((String) launcher.get("isHidden")) == "true";
+			
+			war.addMissileLauncher(id, isHidden);
+			
+			readMissilesToLaunch((JSONObject)launcher, war);
+		}
+	}
+	
+	private static void readMissilesToLaunch(JSONObject launcher, WarModel war){	
+		Map<String, Integer> missilesList = new LinkedHashMap<>();
+		
+		if(launcher.get("missile") instanceof JSONArray){
+			JSONArray missiles = (JSONArray) launcher.get("missile");
+			Iterator<JSONObject> itr = missiles.iterator();
+	
+			while (itr.hasNext()){
+				JSONObject missile = itr.next();
+				Missile m = getMissileDetails(missile, war.getMissileLauncherByID((String) launcher.get("id")));
+				
+				missilesList.put(m.getID(), Integer.parseInt((String) missile.get("launchTime")));
+				//war.addMissileToLaunch(launcherId, id, damage, destination, flyTime, launchTime);
+			}
+		} else {
+			JSONObject missile = (JSONObject) launcher.get("missile");
+			Missile m = getMissileDetails(missile, war.getMissileLauncherByID((String) launcher.get("id")));
+			
+			//war.addMissileToLaunch(launcherId, id, damage, destination, flyTime, launchTime);
+		}
+		warScheduler.MissileLaunch(missilesList);
+	}
+	
+	private static Missile getMissileDetails(JSONObject missile, MissileLauncher ml) {
+		return new Missile(
+				(String) missile.get("id"), 
+				Integer.parseInt( (String) missile.get("damage") ), 
+				(String) missile.get("destination"), 
+				Integer.parseInt( (String) missile.get("flyTime") ), 
+				ml);
+	}
+	
 	
 	private static void readMissileDestructors() {
 		JSONArray missileDestructors = (JSONArray)jsonParser.returnSubObject(new String[] {"missileDestructors", "destructor"});
@@ -160,60 +209,13 @@ public class Program implements bl.BLConstants{
 				missileDestructors.put((String) missile.get("id"), Integer.parseInt((String) missile.get("destructAfterLaunch")));
 				itr.remove(); // avoids a ConcurrentModificationException
 			}
-		} else{
+		} else {
 			JSONObject missile = (JSONObject) destructorJsonObject.get("destructdMissile");
 			missileDestructors.put((String) missile.get("id"), Integer.parseInt((String) missile.get("destructAfterLaunch")));
 		}
 		
 		//Call scheduler with all missiles
 		warScheduler.MDLaunch(missileDestructors);
-	}
-	
-	private static void readLaunchers(){
-		JSONArray missileLaunchers = (JSONArray) jsonParser.returnSubObject(new String[] {"missileLaunchers", "launcher"});
-		Iterator<JSONObject> iterator = missileLaunchers.iterator();
-		
-		while (iterator.hasNext()) {
-			JSONObject launcher = iterator.next();
-			String id = (String) launcher.get("id");
-			boolean isHidden = ((String) launcher.get("isHidden")) == "true";
-			System.out.println(id);
-			System.out.println(isHidden);
-			
-			war.addMissileLauncher(id, isHidden);
-			
-			readMissilesToLaunch((JSONObject)launcher, id, war);
-		}
-	}
-	private static Missile getMissileDetails(JSONObject missile, MissileLauncher ml) {
-		return new Missile(
-				(String) missile.get("id"), 
-				Integer.parseInt( (String) missile.get("damage") ), 
-				(String) missile.get("destination"), 
-				Integer.parseInt( (String) missile.get("flyTime") ), 
-				ml);
-	}
-	private static void readMissilesToLaunch(JSONObject launcher, String launcherId, WarModel war){	
-		if(launcher.get("missile") instanceof JSONArray){
-			JSONArray missiles = (JSONArray) launcher.get("missile");
-			Iterator<JSONObject> itr = missiles.iterator();
-	
-			while (itr.hasNext()){
-				JSONObject missile = itr.next();
-				Missile m = getMissileDetails(missile, war.getMissileLauncherByID(launcherId));
-				System.out.println("Mine");
-				System.out.println(m);
-				
-				// ################ Add missile launch to schedule ################
-				//war.addMissileToLaunch(launcherId, id, damage, destination, flyTime, launchTime);
-			}
-		} else {
-			JSONObject missile = (JSONObject) launcher.get("missile");
-			Missile m = getMissileDetails(missile, war.getMissileLauncherByID(launcherId));
-			
-			// ################ Add missile launch to schedule ################
-			//war.addMissileToLaunch(launcherId, id, damage, destination, flyTime, launchTime);
-		}
 	}
 	
 	public static void destructLauncher(String launcherID) {
@@ -224,6 +226,11 @@ public class Program implements bl.BLConstants{
 	public static void destructMissile(String missileID){
 		System.out.println("Log: destructing missile with id: " + missileID);
 		war.destructMissile(missileID);
+	}
+	
+	public static void launchMissile(String missileID) {
+		System.out.println("Log: launching missile with id: " + missileID);
+		war.launchMissile(missileID);
 	}
 }
 
