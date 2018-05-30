@@ -76,7 +76,6 @@ public class warScheduler {
 	public static void MDLaunch(Map<String, Integer> list) {
 		//Sort the list by launch time
 		list = sortByValue(list);
-		
 		//Copy list to static map for scheduling
 		Iterator it = list.entrySet().iterator();
 	    while (it.hasNext()) {
@@ -86,7 +85,6 @@ public class warScheduler {
 	    }
 	    
 	    for (Map.Entry<String, Integer> entry : missileDestructors.entrySet()) {
-			System.out.println("Scheduling");
 			scheduleLaunch((Integer)entry.getValue(), missileDestructors, "destructMissile");
 		}
 	}
