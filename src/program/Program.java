@@ -11,7 +11,14 @@ import org.json.simple.JSONObject;
 import bl.Missile;
 import bl.MissileLauncher;
 import bl.WarModel;
-
+/*
+ * Main class to run the program and get input from console/GUI
+ * 
+ * TODO:
+ * 	1. Re-factor when a missile is created
+ * 	2. Re-factor war object to decide the damage of a missile
+ * 
+ */
 public class Program implements bl.BLConstants{
 
 	static Scanner s = new Scanner (System.in);
@@ -99,7 +106,7 @@ public class Program implements bl.BLConstants{
 //		if ( s.nextInt() != YES )
 //			return;
 		
-		readLaunchers(); //Done - remember to add to schedule
+		readLaunchers(); //Done
 		//readMissileDestructors(); //Done
 		//readMissileLauncherDestructors(); //Done
 	}
@@ -137,6 +144,7 @@ public class Program implements bl.BLConstants{
 			JSONObject missile = (JSONObject) launcher.get("missile");
 			Missile m = getMissileDetails(missile, war.getMissileLauncherByID((String) launcher.get("id")));
 			
+			missilesList.put(m.getID(), Integer.parseInt((String) missile.get("launchTime")));
 			//war.addMissileToLaunch(launcherId, id, damage, destination, flyTime, launchTime);
 		}
 		warScheduler.MissileLaunch(missilesList);
