@@ -1,6 +1,0 @@
-11/5/2018 17:50:1
-Missile hit Ofakim after 3 seconds! 
-demage is 5000
-11/5/2018 17:50:10
-Missile hit Beer-Sheva after 7 seconds! 
-demage is 1000

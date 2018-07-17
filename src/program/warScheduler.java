@@ -1,6 +1,5 @@
 package program;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -13,7 +12,10 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import bl.Missile;
 import bl.MissileDestructor;
+import bl.WarModel;
+import program.IConstants.LauncherDestructorType;
 
 /**
  * This class receives a map of objects with the properties and times
@@ -32,10 +34,10 @@ public class warScheduler {
 	
 	static java.lang.reflect.Method method;
 	
-	static Program p;
+	static WarModel m;
 	
-	public warScheduler(Program p){
-		this.p = p;
+	public warScheduler(WarModel warModel){
+		this.m = warModel;
 	}
 	
 	public static void MissileLaunch(Map<String, Integer> list) {
@@ -103,14 +105,14 @@ public class warScheduler {
 	        	list.remove(list.entrySet().iterator().next().getKey());
 	        	
 	        	//Invoke the correct launching method
-	        	if(methodName == "destructLauncher") 
-	        		Program.destructLauncher(pair.getKey());
-	        	else if (methodName == "destructMissile")
-	        		Program.destructMissile(pair.getKey());
-	        	else if (methodName == "")
-	        		Program.destructLauncher(pair.getKey());
-	        	else
-	        		System.out.println("Log: Unrecognised method");
+//	        	if(methodName == "destructLauncher") 
+//	        		Program.destructLauncher(pair.getKey());
+//	        	else if (methodName == "destructMissile")
+//	        		Program.destructMissile(pair.getKey());
+//	        	else if (methodName == "")
+//	        		Program.destructLauncher(pair.getKey());
+//	        	else
+//	        		System.out.println("Log: Unrecognised method");
 
 	            return "Complete";
 	        }
@@ -129,4 +131,5 @@ public class warScheduler {
         }
         return result;
     }
+
 }

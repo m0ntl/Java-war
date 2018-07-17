@@ -24,7 +24,7 @@
         },
         {
           "id": "L102",
-          "isHidden": "true",
+          "isHidden": "false",
           "missile": [
             {
               "id": "M3",
@@ -38,6 +38,13 @@
               "destination": "Beer-Sheva",
               "launchTime": "9",
               "flyTime": "7",
+              "damage": "1000"
+            }
+            {
+              "id": "M5",
+              "destination": "Beer-Sheva",
+              "launchTime": "13",
+              "flyTime": "8",
               "damage": "1000"
             }
           ]
@@ -91,6 +98,14 @@
             {
               "id": "L102",
               "destructTime": "12"
+            }
+            {
+              "id": "L102",
+              "destructTime": "13"
+            }
+            {
+              "id": "L102",
+              "destructTime": "14"
             }
           ]
         }

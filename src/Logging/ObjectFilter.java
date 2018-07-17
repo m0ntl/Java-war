@@ -5,7 +5,7 @@ import java.util.logging.LogRecord;
 
 public class ObjectFilter implements Filter {
 
-private Object filtered;
+	private Object filtered;
 	
 	public ObjectFilter(Object toFilter) {
 		filtered = toFilter;

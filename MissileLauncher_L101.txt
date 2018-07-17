@@ -1,6 +1,0 @@
-11/5/2018 17:50:8
-Missile hit Sderot after 12 seconds! 
-demage is 1500
-11/5/2018 17:50:15
-Missile hit Beer-Sheva after 7 seconds! 
-demage is 2000

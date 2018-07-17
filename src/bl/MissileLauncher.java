@@ -3,119 +3,68 @@ package bl;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class MissileLauncher implements Runnable, BLConstants{
-
-	private String 			id;		
+public class MissileLauncher extends WarObject{
 	
-	private SideB 			side;
-
-	private boolean			inWar;
-	private boolean			isAlive;
-	private boolean			waitingForMissile;
-		
+	private boolean			isDestructed;
 	private Queue<Missile>	missilesToLaunch = new LinkedList<>();
-			
 	
-	public MissileLauncher(String id, SideB side){
-		this.id = id;
-		this.side = side;
-		
-		waitingForMissile = false;
-		inWar = true;
-		isAlive = true;
+	public MissileLauncher(String id, WarModel war){
+		super(id, war);
+		isDestructed = false;
 	}
 		
 	public synchronized void addMissileToLaunchQueue(Missile m){
 		missilesToLaunch.add( m );
-
-		synchronized (this) {
-			if ( waitingForMissile )
-				notify();
-		}
+		notifyCheck();
 	}
 
-	
-	/* missile-launch */
 	public void run() {
 		while ( inWar ) {
-			if ( !missilesToLaunch.isEmpty() )
-				prepareToLaunch();
+			if ( !missilesToLaunch.isEmpty()) 
+				launchMissile();
 			else {
 				synchronized (MissileLauncher.this) {
 					try {
-						waitingForMissile = true;
+						waitingForWork = true;
 						wait(); 
-						waitingForMissile = false;
+						waitingForWork = false;
 					} catch (InterruptedException e) {e.printStackTrace();}
 				}
 			}
 		}
 	}
 	
-	private synchronized void prepareToLaunch(){
+	public void launchMissile() {	
 		Missile m = missilesToLaunch.poll();
 		if (m == null) 
 			return;
 		
-		side.onStartOfLaunch(id, m.getID(), m.getDestination());
-		launchMissile(m);
-		updateResults(m);				
-	}
-
-	public void launchMissile(Missile m) {		
+		war.launchStarted(id, m.getID(), m.getDestination(), m.getFlyTime());	
 		m.start();
-		try {
-			//wait until missile finishes flying
-			wait(); 	
-		} catch (InterruptedException e) { e.printStackTrace(); }
+		
+		try { m.join(); } catch (InterruptedException e) { e.printStackTrace(); }
  	}
 
-	public void updateResults(Missile m){
-	
-		boolean success = !m.isDestructed();
-		String destination = m.getDestination();
-		int damage = m.getDamage();
-		int flightTime = m.getFlyTime();
+	public void updateResults(boolean success, String destination, int damage, int flyTime, String missileID){
+		war.launchEnded(this, missileID, success, destination, damage, flyTime);
 		
-		//notify missile that launcher finished getting the information
-		synchronized (m) {
-			m.notify();
-		}
-		
-		side.onEndOfLaunch(this, success, destination, damage, flightTime);
+		int launchTime = war.getWarTimeInSeconds() - flyTime;
+		logsGen.endLaunch(missileID, id, destination, damage, flyTime, success, this, launchTime);
 	}
-
 	
-	/* stop thread */
 	public void destructLauncher(){
-		isAlive = false;
+		isDestructed = true;
 		terminate();
 	}
 		
-	public void terminate(){
-		inWar = false;
-		synchronized (this) {
-			if ( waitingForMissile )
-				notify();
-		}
-	}
-
 	
-	/* getters */
-	public String getID(){
-		return id;
-	}
-
-	public boolean isAlive(){
-		return isAlive;
+	//getters
+	public boolean isDestructed(){
+		return isDestructed;
 	}
 	
-	public boolean isHidden(){
-		return false;
-	}
-
 	
-	/* hashCode & equals */
+	// hashCode & equals
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;

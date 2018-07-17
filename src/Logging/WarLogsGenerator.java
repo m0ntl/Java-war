@@ -1,7 +1,8 @@
 package Logging;
 
 import java.io.IOException;
-import java.util.logging.ConsoleHandler;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -9,77 +10,58 @@ import java.util.logging.Logger;
 import bl.LauncherDestructor;
 import bl.MissileDestructor;
 import bl.MissileLauncher;
-
+import bl.WarObject;
 
 public class WarLogsGenerator{
 
-	private static Logger			logger;
-	private static ConsoleHandler	theConsoleHandler;
+	private static WarLogsGenerator 	logsGen;
+	private static Logger				logger;
 
-	public WarLogsGenerator(){
+	private WarLogsGenerator(){
 		logger = Logger.getLogger("warLogger");
 		logger.setUseParentHandlers(false);
-		theConsoleHandler = new ConsoleHandler();		
-		theConsoleHandler.setFormatter(new WarFormatter()); 
-		logger.addHandler(theConsoleHandler);
+
+		try {
+			FileHandler warHandler = new FileHandler("war.txt");
+			warHandler.setFormatter(new WarFormatter()); 
+			logger.addHandler(warHandler);
+		} catch (SecurityException e) { e.printStackTrace(); 
+		} catch (IOException e) { e.printStackTrace(); }
 	}
 	
-	public void startLaunch(String destination, String launcherID){
-		logger.info("launcher #" + launcherID + " just launched a missile to " + destination);
+	public static WarLogsGenerator getInstance(){
+		if (logsGen == null)
+			logsGen = new WarLogsGenerator();
+		return logsGen;
 	}
 	
-	public void endLaunch(String destination, int damage, int flightTime, boolean success, MissileLauncher l){
-		// need to add time of launch + time of landing !!!
-		String msg = "";
+	public synchronized void endLaunch(String missileID, String launcherID, String destination, int damage, int flyTime, boolean success, MissileLauncher l, int launchTime){
+		String msg = "End of missile-launch\n" +"launcher: #" + launcherID + " missile: #" + missileID + " launchTime: " +launchTime;
 		if ( success )
-			msg += "Missile hit " + destination + " after " + flightTime + " seconds! \ndemage is " +  damage;
+			msg += ", destination: " + destination + ", landTime: " + (flyTime + launchTime) + ", demage: " +  damage + "\n";
 		else
-			msg += "Missile got destructed after " + flightTime + " seconds";
+			msg += "destructTime: " + (flyTime + launchTime) + "\n";
 		
 		logger.log(Level.INFO, msg, l);
 	}
 	
-	public void startMissileDestruct(){
-		//logger.info("launcher #" + launcherID + " just launched a missile to " + destination);
-	}
+	public synchronized void afterLauncherDestruct(LauncherDestructor d, String launcherID , boolean success){
+		String msg = "End of launcher #" + launcherID + " destruct\n" + "success: " + success + "\n";
 	
-	public void afterMissileDestruct(MissileDestructor d, String launcherID , boolean success){
-		String msg = "Destructor tried to destruct launcher #" + launcherID;
-		if ( success )
-			msg += ", and succceeded!";
-		else
-			msg += ", and filed";
-		
 		logger.log(Level.INFO, msg, d);
 	}
 	
-	public void afterLauncherDestruct(MissileDestructor d, String missileID , boolean success, int damage){
-		String msg = "Destructor tried to destruct missile #" + missileID;
-		if ( success )
-			msg += ", and succceeded!";
-		else
-			msg += ", and filed.\n damage caused by the missile is " + damage;
+	public synchronized void afterMissileDestruct(MissileDestructor d, String missileID , boolean success, int damage){
+		String msg = "End of missile #" + missileID + "destruct\n" + "success: " + success + "\n";
+		if ( !success )
+			msg += "damage: " + damage;
 		logger.log(Level.INFO, msg, d);
 	}
 	
-	public void statistics(String statistics){
-		logger.info(statistics);
+	public void addWarObject(WarObject o){
+		addHandler(o, o.getClass().getSimpleName(), o.getID());	
 	}
-	
-	public void addLauncher( MissileLauncher l ){
-		logger.info("missile launcher #" + l.getID() + ", hidden: " + l.isHidden()+ ", was added !");
-		addHandler(l, l.getClass().getSimpleName() , l.getID());	
-	}
-	
-	public void addMissileDestructor(MissileDestructor d){
-		addHandler(d, d.getClass().getSimpleName() , d.getID());	
 
-	}
-	
-	public void addLauncherDestructor(LauncherDestructor d){
-		addHandler(d, d.getClass().getSimpleName(), d.getID());	
-	}
-	
 	private void addHandler(Object obj, String className, String id){
 		FileHandler launcherHandler;
 		try {
@@ -87,9 +69,8 @@ public class WarLogsGenerator{
 			launcherHandler.setFilter(new ObjectFilter(obj));
 			launcherHandler.setFormatter(new WarFormatter()); 
 			logger.addHandler(launcherHandler);
-		
+			
 		} catch (SecurityException e) { e.printStackTrace(); 
 		} catch (IOException e) { e.printStackTrace(); }
 	}
-
 }

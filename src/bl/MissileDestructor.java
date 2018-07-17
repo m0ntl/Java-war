@@ -1,72 +1,76 @@
 package bl;
 
-import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.Queue;
-import java.util.Date;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.TimerTask;
-import java.util.Date;
-import java.util.Timer;
+import java.util.Random;
 
 
+public class MissileDestructor extends WarObject {
 
+	private Queue<Missile> targets = new LinkedList<>();
+	
+	public MissileDestructor(String id, WarModel war) {
+		super(id, war);
+	}
+	
+	public synchronized void addTargetToQueue(Missile m){
+		targets.add(m);
+		notifyCheck();
+	}
 
-public class MissileDestructor extends Destructor implements Runnable {
-	private boolean inWar;
-	Map<String, Integer> destructMap;
-	private Queue<Missile>	missilesToLaunch = new LinkedList<>();
-	private SideA A;
-	
-	public MissileDestructor(String id, SideA A) {
-		super(id);
-		this.destructMap = new HashMap<>();
-		inWar = true;
-		this.A = A;
-	}
-	
-	public void destructMissle(String missileID, int flyTime) {
-		//Assign random destruct time
-		//int destructAfterLaunch = (int )(Math.random() * BLConstants.MAX_FLY_TIME + BLConstants.MIN_FLY_TIME);
-		
-		//Add missile to destruct map
-		destructMap.put(missileID, flyTime);
-		
-		//Return if destruction was successful
-		//return destructAfterLaunch < flyTime ? true : false;
-		
-		A.destructMissile(missileID);
-	}
-	
-	public String toString() { 
-		return "Printing missileD with id: " + super.getID() + " with map: " + destructMap;
-	}
-	
-	public void terminate(){
-//		inWar = false;
-//		synchronized (this) {
-//			if ( waitingToDestruct )
-//				notify();
-//		}
-	}
-	
 	public void run() {
-//		while ( inWar ) {
-//			if ( !missilesToLaunch.isEmpty() )
-//				prepareToLaunch();
-//			else {
-//				synchronized (MissileLauncher.this) {
-//					try {
-//						waitingToDestruct = true;
-//						wait(); 
-//						waitingToDestruct = false;
-//					} catch (InterruptedException e) {e.printStackTrace();}
-//				}
-//			}
-//		}
+		while ( inWar ) {
+			if ( !targets.isEmpty() )
+				destructMissile();
+			else {
+				synchronized (this) {
+					try {
+						waitingForWork = true;
+						wait(); 
+						waitingForWork = false;
+					} catch (InterruptedException e) {e.printStackTrace();}
+				}
+			}
+		}
+	}
+	
+	public void destructMissile() {
+		try {
+			Missile m = targets.poll();
+			if (m == null) 
+				return;
+			int duration = new Random().nextInt(MAX_TIME) + 1;
+			war.missileDestructStarted(id, m.getID(), duration);
+			boolean success = false;
+			Thread.sleep(duration*ONE_SEC);
+
+			if ( !m.isDestructed() && m.isAlive() ) {
+				m.destructMissile();
+				if (m.isDestructed())
+					success = true;		
+			}
+			
+			updateResults(m,  success);	
+			
+		} catch (InterruptedException e) {e.printStackTrace();	}
+	}
+	
+	public void updateResults(Missile m, boolean success){
+		String missileID = m.getID();
+		war.missileDestructEnded(id, missileID, success);
+		
+		logsGen.afterMissileDestruct(this, missileID, success, m.getDamage());
+	}
+	
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		return true;
 	}
 }

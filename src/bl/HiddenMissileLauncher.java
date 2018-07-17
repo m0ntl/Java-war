@@ -4,43 +4,46 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class HiddenMissileLauncher extends MissileLauncher implements IHidden{
+public class HiddenMissileLauncher extends MissileLauncher {
 
-	private boolean		isHiddenNow; 
-	private boolean		isLaunching; 
-
+	private boolean	isHiddenNow; 
+	private boolean	isLaunching; 
 	
-	public HiddenMissileLauncher(String id, SideB side) {
-		super(id, side);
+	
+	public HiddenMissileLauncher(String id, WarModel war) {
+		super(id, war);
 		isHiddenNow = true;
 		isLaunching = false;
 	}
 	
-	public synchronized void launchMissile(Missile m) {
+	public synchronized void launchMissile() {
 		isLaunching = true;
-		if( isHiddenNow )
-			emerge();	
-		
-		super.launchMissile(m);
+		emerge();
+
+		super.launchMissile();
 		
 		isLaunching = false; 
 		hide();
 	}
 	
-	public synchronized void hide(){
-		
+	public void emerge(){
+		isHiddenNow = false;
+		war.launcherStateChanged(id, isHiddenNow);
+	}
+	
+	public synchronized void hide(){	
+		if (isDestructed()) 
+			return;
 		//takes X time to hide
 		//if after X time launcher not launching missile -> hide
 		new Timer().schedule(new TimerTask() {
 			public void run() {
 				if ( !isLaunching )
 					isHiddenNow = true;
+				war.launcherStateChanged(id, isHiddenNow);
 			}
-		}, new Random().nextInt(MAX_TIME) );	
-	}
-	
-	public void emerge(){
-		isHiddenNow = false;
+		}, new Random().nextInt(MAX_TIME*ONE_SEC+1) );	
+		
 	}
 
 	public void destructLauncher(){
